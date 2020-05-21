@@ -30,12 +30,12 @@ class Input:
                 raise StopIteration
             raise RuntimeError("Could not read model.")
 
-        abc = wrap.wrap_imm_abc(lib.imm_model_abc(imm_model))
+        abc = wrap.imm_abc(lib.imm_model_abc(imm_model))
 
         states: Dict[CData, State] = {}
         for i in range(lib.imm_model_nstates(imm_model)):
             imm_state = lib.imm_model_state(imm_model, i)
-            states[imm_state] = wrap.wrap_imm_state(imm_state, abc)
+            states[imm_state] = wrap.imm_state(imm_state, abc)
 
         hmm = HMM(lib.imm_model_hmm(imm_model), abc, states)
         dp = DP(lib.imm_model_dp(imm_model), hmm)

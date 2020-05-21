@@ -31,7 +31,7 @@ class AlphabetTable:
         cls: Type[AlphabetTable], alphabet: Alphabet, lprobs: Sequence[float]
     ) -> AlphabetTable:
         """
-        Clreate an alphabet table of probabilities.
+        Create an alphabet table of probabilities.
 
         Parameters
         ----------
