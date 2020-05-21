@@ -1,9 +1,9 @@
-from typing import Generic, Mapping, TypeVar
+from typing import Generic, TypeVar
 
 from ._cdata import CData
 from ._ffi import ffi, lib
-from ._path import Path, wrap_imm_path
-from ._sequence import Sequence, SubSequence
+from ._path import Path
+from ._sequence import SubSequence
 from ._state import State
 from ._step import Step
 
@@ -53,12 +53,3 @@ class Result(Generic[TState]):
 
     def __repr__(self) -> str:
         return str(self.loglikelihood)
-
-
-# TODO: have wrappers in separate files
-def wrap_imm_result(
-    imm_result: CData, sequence: Sequence, states: Mapping[CData, TState]
-):
-    path = wrap_imm_path(lib.imm_result_path(imm_result), states)
-    imm_subseq = lib.imm_result_subseq(imm_result)
-    return Result(imm_result, path, SubSequence(imm_subseq, sequence))

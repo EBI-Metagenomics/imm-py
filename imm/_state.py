@@ -196,15 +196,3 @@ class TableState(State[T]):
 
     def __repr__(self):
         return f"<{self.__class__.__name__}:{str(self)}>"
-
-
-# TODO: have wrappers in separate files
-def wrap_imm_state(imm_state: CData, alphabet: T) -> State:
-    state_type = StateType(lib.imm_state_type_id(imm_state))
-    if state_type == StateType.MUTE:
-        return MuteState(lib.imm_mute_state_derived(imm_state), alphabet)
-    if state_type == StateType.NORMAL:
-        return NormalState(lib.imm_normal_state_derived(imm_state), alphabet)
-    if state_type == StateType.TABLE:
-        return TableState(lib.imm_table_state_derived(imm_state), alphabet)
-    raise ValueError(f"Unknown state type: {state_type}.")

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Dict, Generic, Optional, Type, TypeVar
 
-from ._ffi import ffi, lib
 from ._alphabet import Alphabet
 from ._cdata import CData
+from ._ffi import ffi, lib
 from ._lprob import lprob_is_valid, lprob_is_zero, lprob_zero
 from ._path import Path
 from ._sequence import Sequence
@@ -12,10 +12,10 @@ from ._state import State
 
 __all__ = ["HMM"]
 
-TState = TypeVar("TState", bound=State)
+T = TypeVar("T", bound=State)
 
 
-class HMM(Generic[TState]):
+class HMM(Generic[T]):
     """
     Hidden Markov model.
 
@@ -29,13 +29,13 @@ class HMM(Generic[TState]):
         self,
         imm_hmm: CData,
         alphabet: Alphabet,
-        states: Optional[Dict[CData, TState]] = None,
+        states: Optional[Dict[CData, T]] = None,
     ):
         if imm_hmm == ffi.NULL:
             raise RuntimeError("`imm_hmm` is NULL.")
         self._alphabet = alphabet
         if states is None:
-            self._states: Dict[CData, TState] = {}
+            self._states: Dict[CData, T] = {}
         else:
             self._states = states
         self._imm_hmm = imm_hmm
@@ -57,14 +57,14 @@ class HMM(Generic[TState]):
     def imm_hmm(self) -> CData:
         return self._imm_hmm
 
-    def states(self) -> Dict[CData, TState]:
+    def states(self) -> Dict[CData, T]:
         return self._states
 
-    def set_start_lprob(self, state: TState, lprob: float):
+    def set_start_lprob(self, state: T, lprob: float):
         if lib.imm_hmm_set_start(self._imm_hmm, state.imm_state, lprob) != 0:
             raise RuntimeError("Could not set start probability.")
 
-    def transition(self, a: TState, b: TState):
+    def transition(self, a: T, b: T):
         """
         Parameters
         ----------
@@ -78,7 +78,7 @@ class HMM(Generic[TState]):
             raise RuntimeError("Could not retrieve transition probability.")
         return lprob
 
-    def set_transition(self, a: TState, b: TState, lprob: float):
+    def set_transition(self, a: T, b: T, lprob: float):
         """
         Parameters
         ----------
@@ -103,7 +103,7 @@ class HMM(Generic[TState]):
     def alphabet(self) -> Alphabet:
         return self._alphabet
 
-    def add_state(self, state: TState, start_lprob: float = lprob_zero()):
+    def add_state(self, state: T, start_lprob: float = lprob_zero()):
         """
         Parameters
         ----------
@@ -116,7 +116,7 @@ class HMM(Generic[TState]):
             raise ValueError(f"Could not add state {str(state.name)}.")
         self._states[state.imm_state] = state
 
-    def del_state(self, state: TState):
+    def del_state(self, state: T):
         if state.imm_state not in self._states:
             raise ValueError(f"State {state} not found.")
 
@@ -130,7 +130,7 @@ class HMM(Generic[TState]):
         if lib.imm_hmm_normalize(self._imm_hmm) != 0:
             raise ValueError("Normalization error.")
 
-    def normalize_transitions(self, state: TState):
+    def normalize_transitions(self, state: T):
         err: int = lib.imm_hmm_normalize_trans(self._imm_hmm, state.imm_state)
         if err != 0:
             raise ValueError("Normalization error.")
@@ -141,7 +141,7 @@ class HMM(Generic[TState]):
             raise ValueError("Could not calculate the likelihood.")
         return lprob
 
-    def create_dp(self, end_state: TState):
+    def create_dp(self, end_state: T):
         from ._dp import DP
 
         imm_state = end_state.imm_state

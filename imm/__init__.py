@@ -1,3 +1,4 @@
+from . import wrap
 from ._alphabet import Alphabet
 from ._alphabet_table import AlphabetTable
 from ._dp import DP
@@ -15,7 +16,7 @@ from ._result import Result
 from ._results import Results
 from ._sequence import Sequence, SequenceABC, SubSequence
 from ._sequence_table import SequenceTable
-from ._state import MuteState, NormalState, State, StateType, TableState, wrap_imm_state
+from ._state import MuteState, NormalState, State, StateType, TableState
 from ._step import Step
 
 try:
@@ -58,5 +59,5 @@ __all__ = [
     "lprob_is_zero",
     "lprob_normalize",
     "lprob_zero",
-    "wrap_imm_state",
+    "wrap",
 ]

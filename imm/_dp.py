@@ -1,19 +1,20 @@
 from typing import Generic, TypeVar
 
-from ._ffi import ffi, lib
 from ._cdata import CData
+from ._ffi import ffi, lib
 from ._hmm import HMM
 from ._results import Results
 from ._sequence import Sequence
 from ._state import State
+from .wrap import wrap_imm_results
 
 __all__ = ["DP"]
 
-TState = TypeVar("TState", bound=State)
+T = TypeVar("T", bound=State)
 
 
-class DP(Generic[TState]):
-    def __init__(self, imm_dp: CData, hmm: HMM[TState]):
+class DP(Generic[T]):
+    def __init__(self, imm_dp: CData, hmm: HMM[T]):
         if imm_dp == ffi.NULL:
             raise RuntimeError("`imm_dp` is NULL.")
         self._imm_dp = imm_dp
@@ -23,8 +24,7 @@ class DP(Generic[TState]):
     def imm_dp(self) -> CData:
         return self._imm_dp
 
-    def viterbi(self, seq: Sequence, window_length: int = 0) -> Results[TState]:
-        from ._results import wrap_imm_results
+    def viterbi(self, seq: Sequence, window_length: int = 0) -> Results[T]:
 
         imm_seq = seq.imm_seq
 

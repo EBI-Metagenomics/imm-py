@@ -1,9 +1,9 @@
-from typing import Generic, Iterable, List, Mapping, TypeVar
+from typing import Generic, Iterable, TypeVar
 
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._result import Result
-from ._sequence import Sequence, SequenceABC
+from ._sequence import SequenceABC
 from ._state import State
 
 __all__ = ["Results"]
@@ -53,17 +53,3 @@ class Results(Generic[TState]):
 
     def __repr__(self) -> str:
         return "[" + ",".join([str(r) for r in self]) + "]"
-
-
-# TODO: have wrappers in separate files
-def wrap_imm_results(
-    imm_results: CData, sequence: Sequence, states: Mapping[CData, TState]
-):
-    from ._result import wrap_imm_result
-
-    results: List[Result[TState]] = []
-    for i in range(lib.imm_results_size(imm_results)):
-        imm_result = lib.imm_results_get(imm_results, i)
-        results.append(wrap_imm_result(imm_result, sequence, states))
-
-    return Results(imm_results, results, sequence)

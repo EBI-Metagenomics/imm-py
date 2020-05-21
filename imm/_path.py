@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-from typing import Generic, Iterable, Iterator, List, Mapping, Type, TypeVar
+from typing import Generic, Iterable, Iterator, Type, TypeVar
 
 from ._cdata import CData
 from ._ffi import ffi, lib
-from ._state import State
 from ._step import Step
 
 __all__ = ["Path"]
 
 T = TypeVar("T", bound=Step)
-TState = TypeVar("TState", bound=State)
 
 
 class Path(Generic[T]):
@@ -69,15 +67,3 @@ class Path(Generic[T]):
 
     def __repr__(self):
         return f"<{self.__class__.__name__}:{str(self)}>"
-
-
-# TODO: have wrappers in separate files
-def wrap_imm_path(imm_path: CData, states: Mapping[CData, TState]) -> Path:
-    steps: List[Step[TState]] = []
-    imm_step = lib.imm_path_first(imm_path)
-    while imm_step != ffi.NULL:
-        imm_state = lib.imm_step_state(imm_step)
-        steps.append(Step(imm_step, states[imm_state]))
-        imm_step = lib.imm_path_next(imm_path, imm_step)
-
-    return Path(imm_path, steps)
