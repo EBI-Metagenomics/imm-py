@@ -1,11 +1,9 @@
 from math import log
 
 import pytest
-from numpy.testing import assert_allclose, assert_equal
 
-from imm import Alphabet
-from imm import SequenceTable, lprob_is_zero
-from imm import Sequence
+from imm import Alphabet, Sequence, SequenceTable, lprob_is_zero
+from imm.testing import assert_allclose
 
 
 def test_sequence_table():
@@ -20,7 +18,7 @@ def test_sequence_table():
 
     assert_allclose(seqt.lprob(Sequence.create(b"AGTG", alphabet)), log(0.2))
     assert_allclose(seqt.lprob(Sequence.create(b"T", alphabet)), log(1.2))
-    assert_equal(lprob_is_zero(seqt.lprob(Sequence.create(b"", alphabet))), True)
+    assert lprob_is_zero(seqt.lprob(Sequence.create(b"", alphabet)))
 
     with pytest.raises(RuntimeError):
         seqt.lprob(Sequence.create(b"AT", Alphabet.create(b"AT", b"X")))

@@ -1,6 +1,8 @@
 from math import inf, isinf, isnan, nan
 from typing import Iterable
 
+from ._ffi import ffi, lib
+
 __all__ = [
     "lprob_zero",
     "lprob_invalid",
@@ -27,8 +29,14 @@ def lprob_is_valid(x: float):
 
 
 def lprob_normalize(arr: Iterable[float]):
-    from numpy import asarray
-    from scipy.special import logsumexp
+    from array import array
 
-    arr = asarray(arr, float)
-    return arr - logsumexp(arr)
+    pyarr = list(arr)
+    size = len(pyarr)
+    carr = ffi.new(f"double[{size}]", pyarr)
+
+    err: int = lib.imm_lprob_normalize(carr, size)
+    if err != 0:
+        raise RuntimeError("Failed to normalize.")
+
+    return array("d", carr)

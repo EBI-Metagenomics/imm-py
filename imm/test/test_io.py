@@ -2,7 +2,6 @@ from math import log
 from pathlib import Path
 
 import pytest
-from numpy.testing import assert_allclose, assert_equal
 
 from imm import (
     HMM,
@@ -15,6 +14,7 @@ from imm import (
     Sequence,
     lprob_zero,
 )
+from imm.testing import assert_allclose
 
 
 @pytest.fixture
@@ -69,7 +69,7 @@ def test_io(tmpdir, imm_example):
         assert_allclose(score, log(0.48))
         nmodels += 1
     input.close()
-    assert_equal(nmodels, 3)
+    assert nmodels == 3
 
     with Input.create(bytes(filepath)) as input:
         nmodels = 0
@@ -79,4 +79,4 @@ def test_io(tmpdir, imm_example):
             score = model.dp.viterbi(seq)[0].loglikelihood
             assert_allclose(score, log(0.48))
             nmodels += 1
-        assert_equal(nmodels, 3)
+        assert nmodels == 3

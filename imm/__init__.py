@@ -1,4 +1,4 @@
-from . import wrap
+from . import testing, wrap
 from ._alphabet import Alphabet
 from ._alphabet_table import AlphabetTable
 from ._dp import DP
@@ -65,5 +65,6 @@ __all__ = [
     "lprob_is_zero",
     "lprob_normalize",
     "lprob_zero",
+    "testing",
     "wrap",
 ]

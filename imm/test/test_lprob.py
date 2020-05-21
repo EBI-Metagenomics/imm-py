@@ -1,6 +1,7 @@
 from math import log
+
 from imm import lprob_normalize
-from numpy.testing import assert_allclose
+from imm.testing import assert_allclose
 
 
 def test_lprob_normalize():

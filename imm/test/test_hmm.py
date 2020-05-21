@@ -1,7 +1,6 @@
 from math import log
 
 import pytest
-from numpy.testing import assert_allclose, assert_equal
 
 from imm import (
     HMM,
@@ -16,6 +15,7 @@ from imm import (
     lprob_invalid,
     lprob_zero,
 )
+from imm.testing import assert_allclose
 
 
 def test_hmm_states():
@@ -38,7 +38,7 @@ def test_hmm_states():
     with pytest.raises(ValueError):
         hmm.add_state(M)
 
-    assert_equal(len(hmm.states()), 2)
+    assert len(hmm.states()) == 2
 
 
 def test_hmm_trans_prob():
@@ -394,7 +394,7 @@ def test_hmm_viterbi_1():
 
     dp = hmm.create_dp(E)
     results = dp.viterbi(Sequence.create(b"AC", alphabet))
-    assert_equal(len(results), 1)
+    assert len(results) == 1
     assert_allclose(results[0].loglikelihood, log(0.3))
 
 
@@ -484,13 +484,13 @@ def test_hmm_viterbi_3():
     dp = hmm.create_dp(E)
     results = dp.viterbi(Sequence.create(b"AC", alphabet))
     score = results[0].loglikelihood
-    assert_equal(bytes(results[0].sequence), b"AC")
+    assert bytes(results[0].sequence) == b"AC"
     path = results[0].path
     steps = list(path)
-    assert_equal(steps[0].seq_len, 0)
-    assert_equal(steps[1].seq_len, 1)
-    assert_equal(steps[2].seq_len, 1)
-    assert_equal(steps[3].seq_len, 0)
+    assert steps[0].seq_len == 0
+    assert steps[1].seq_len == 1
+    assert steps[2].seq_len == 1
+    assert steps[3].seq_len == 0
 
     assert_allclose(score, log(0.3072))
 
@@ -514,16 +514,16 @@ def test_hmm_viterbi_3():
     assert_allclose(score, log(0.3072))
 
     results = dp.viterbi(Sequence.create(b"ACAC", alphabet), 2)
-    assert_equal(len(results), 3)
+    assert len(results) == 3
 
     assert_allclose(results[0].loglikelihood, log(0.3072))
-    assert_equal(bytes(results[0].sequence), b"AC")
+    assert bytes(results[0].sequence) == b"AC"
 
     assert_allclose(results[1].loglikelihood, log(0.0512))
-    assert_equal(bytes(results[1].sequence), b"CA")
+    assert bytes(results[1].sequence) == b"CA"
 
     assert_allclose(results[2].loglikelihood, log(0.3072))
-    assert_equal(bytes(results[2].sequence), b"AC")
+    assert bytes(results[2].sequence) == b"AC"
 
-    assert_equal(results[1].path[1].seq_len, 1)
-    assert_equal(results[1].path[1].state.name, b"M1")
+    assert results[1].path[1].seq_len == 1
+    assert results[1].path[1].state.name == b"M1"
