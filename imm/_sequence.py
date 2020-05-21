@@ -8,7 +8,7 @@ from ._cdata import CData
 from ._ffi import ffi, lib
 from ._interval import Interval
 
-__all__ = ["Sequence", "SequenceABC"]
+__all__ = ["Sequence", "SequenceABC", "SubSequence"]
 
 T = TypeVar("T", bound=Alphabet)
 

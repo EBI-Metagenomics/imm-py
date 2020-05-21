@@ -23,6 +23,16 @@ class StateType(Enum):
 
 class State(Generic[T]):
     def __init__(self, imm_state: CData, alphabet: T):
+        """
+        State.
+
+        Parameters
+        ----------
+        imm_state
+            State pointer.
+        alphabet
+            Alphabet.
+        """
         if imm_state == ffi.NULL:
             raise RuntimeError("`imm_state` is NULL.")
         self._imm_state = imm_state

@@ -27,7 +27,6 @@ class DP(Generic[T]):
     def viterbi(self, seq: Sequence, window_length: int = 0) -> Results[T]:
 
         imm_seq = seq.imm_seq
-
         imm_results = lib.imm_dp_viterbi(self._imm_dp, imm_seq, window_length)
         if imm_results == ffi.NULL:
             raise RuntimeError("Could not run viterbi.")

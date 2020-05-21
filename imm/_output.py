@@ -10,6 +10,15 @@ __all__ = ["Output"]
 
 
 class Output:
+    """
+    IMM file writer.
+
+    Parameters
+    ----------
+    imm_output
+        Output pointer.
+    """
+
     def __init__(self, imm_output: CData):
         if imm_output == ffi.NULL:
             raise RuntimeError("`imm_output` is NULL.")

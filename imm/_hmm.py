@@ -21,8 +21,12 @@ class HMM(Generic[T]):
 
     Parameters
     ----------
-    alphabet : `Alphabet`
+    imm_hmm
+        HMM pointer.
+    alphabet
         Alphabet.
+    states
+        States. Optional.
     """
 
     def __init__(

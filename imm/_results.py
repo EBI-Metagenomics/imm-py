@@ -8,10 +8,10 @@ from ._state import State
 
 __all__ = ["Results"]
 
-TState = TypeVar("TState", bound=State)
+T = TypeVar("T", bound=State)
 
 
-class Results(Generic[TState]):
+class Results(Generic[T]):
     """
     Results.
 
@@ -26,10 +26,7 @@ class Results(Generic[TState]):
     """
 
     def __init__(
-        self,
-        imm_results: CData,
-        results: Iterable[Result[TState]],
-        sequence: SequenceABC,
+        self, imm_results: CData, results: Iterable[Result[T]], sequence: SequenceABC,
     ):
         if imm_results == ffi.NULL:
             raise RuntimeError("`imm_results` is NULL.")
@@ -40,7 +37,7 @@ class Results(Generic[TState]):
     def __len__(self) -> int:
         return len(self._results)
 
-    def __getitem__(self, i) -> Result[TState]:
+    def __getitem__(self, i) -> Result[T]:
         return self._results[i]
 
     def __iter__(self):

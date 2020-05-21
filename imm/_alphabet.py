@@ -20,7 +20,7 @@ class Alphabet:
     Parameters
     ----------
     imm_abc
-        Pointer.
+        Alphabet pointer.
     """
 
     def __init__(self, imm_abc: CData):

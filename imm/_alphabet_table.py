@@ -15,7 +15,7 @@ class AlphabetTable:
     Parameters
     ----------
     imm_abc_table
-        Alphabet table.
+        Alphabet table pointer.
     alphabet
         Alphabet.
     """

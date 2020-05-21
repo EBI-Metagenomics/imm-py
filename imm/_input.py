@@ -14,6 +14,15 @@ __all__ = ["Input"]
 
 
 class Input:
+    """
+    IMM file reader.
+
+    Parameters
+    ----------
+    imm_input
+        Input pointer.
+    """
+
     def __init__(self, imm_input: CData):
         if imm_input == ffi.NULL:
             raise RuntimeError("`imm_input` is NULL.")

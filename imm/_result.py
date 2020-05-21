@@ -9,10 +9,10 @@ from ._step import Step
 
 __all__ = ["Result"]
 
-TState = TypeVar("TState", bound=State)
+T = TypeVar("T", bound=State)
 
 
-class Result(Generic[TState]):
+class Result(Generic[T]):
     """
     Result.
 
@@ -27,7 +27,7 @@ class Result(Generic[TState]):
     """
 
     def __init__(
-        self, imm_result: CData, path: Path[Step[TState]], sequence: SubSequence,
+        self, imm_result: CData, path: Path[Step[T]], sequence: SubSequence,
     ):
         if imm_result == ffi.NULL:
             raise RuntimeError("`imm_result` is NULL.")
@@ -40,7 +40,7 @@ class Result(Generic[TState]):
         return lib.imm_result_loglik(self._imm_result)
 
     @property
-    def path(self) -> Path[Step[TState]]:
+    def path(self) -> Path[Step[T]]:
         return self._path
 
     @property
