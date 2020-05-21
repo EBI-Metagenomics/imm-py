@@ -4,6 +4,7 @@ from ._alphabet_table import AlphabetTable
 from ._dp import DP
 from ._fragment import Fragment, FragStep
 from ._hmm import HMM
+from ._input import Input
 from ._lprob import (
     lprob_invalid,
     lprob_is_valid,
@@ -11,6 +12,8 @@ from ._lprob import (
     lprob_normalize,
     lprob_zero,
 )
+from ._model import Model
+from ._output import Output
 from ._path import Path
 from ._result import Result
 from ._results import Results
@@ -41,8 +44,11 @@ __all__ = [
     "FragStep",
     "Fragment",
     "HMM",
+    "Input",
+    "Model",
     "MuteState",
     "NormalState",
+    "Output",
     "Path",
     "Result",
     "Results",

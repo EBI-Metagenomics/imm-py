@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Mapping, TypeVar
 
-from ._alphabet import Alphabet
+from ._alphabet import Alphabet, AlphabetType
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._path import Path
@@ -51,3 +51,9 @@ def wrap_imm_path(imm_path: CData, states: Mapping[CData, S]) -> Path:
         imm_step = lib.imm_path_next(imm_path, imm_step)
 
     return Path(imm_path, steps)
+
+
+def wrap_imm_abc(imm_abc: CData):
+    alphabet_type = AlphabetType(lib.imm_abc_type_id(imm_abc))
+    assert alphabet_type == AlphabetType.ABC
+    return Alphabet(imm_abc)

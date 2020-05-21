@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+from enum import Enum
 from typing import Type
 
 from ._cdata import CData
 from ._ffi import ffi, lib
 
 __all__ = ["Alphabet"]
+
+
+class AlphabetType(Enum):
+    ABC = 0x00
 
 
 class Alphabet:
