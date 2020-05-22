@@ -1,10 +1,12 @@
 from . import testing, wrap
 from ._alphabet import Alphabet
 from ._alphabet_table import AlphabetTable
+from ._build_ext import ffibuilder
 from ._dp import DP
 from ._fragment import Fragment, FragStep
 from ._hmm import HMM
 from ._input import Input
+from ._interval import Interval
 from ._lprob import (
     lprob_invalid,
     lprob_is_valid,
@@ -23,9 +25,7 @@ from ._state import MuteState, NormalState, State, StateType, TableState
 from ._step import Step
 
 try:
-    from ._ffi import ffi
-
-    del ffi
+    from ._ffi import lib
 except Exception as e:
     _ffi_err = """
 It is likely caused by a broken installation of this package.
@@ -45,6 +45,7 @@ __all__ = [
     "Fragment",
     "HMM",
     "Input",
+    "Interval",
     "Model",
     "MuteState",
     "NormalState",
@@ -60,6 +61,8 @@ __all__ = [
     "Step",
     "SubSequence",
     "TableState",
+    "ffibuilder",
+    "lib",
     "lprob_invalid",
     "lprob_is_valid",
     "lprob_is_zero",

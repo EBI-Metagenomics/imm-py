@@ -4,12 +4,14 @@ from typing import List
 
 from cffi import FFI
 
+__all__ = ["ffibuilder"]
+
 ffibuilder = FFI()
 libs = ["imm"]
 
 folder = os.path.dirname(os.path.abspath(__file__))
 
-with open(join(folder, "imm", "imm.h"), "r") as f:
+with open(join(folder, "imm.h"), "r") as f:
     ffibuilder.cdef(f.read())
 
 extra_link_args: List[str] = []
