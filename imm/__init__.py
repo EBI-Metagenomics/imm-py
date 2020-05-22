@@ -2,6 +2,7 @@ from . import testing, wrap
 from ._alphabet import Alphabet
 from ._alphabet_table import AlphabetTable
 from ._build_ext import ffibuilder
+from ._cdata import CData
 from ._dp import DP
 from ._fragment import Fragment, FragStep
 from ._hmm import HMM
@@ -40,6 +41,7 @@ __version__ = "0.0.1"
 __all__ = [
     "Alphabet",
     "AlphabetTable",
+    "CData",
     "DP",
     "FragStep",
     "Fragment",
