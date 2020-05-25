@@ -4,12 +4,17 @@ from typing import Iterable
 from ._ffi import ffi, lib
 
 __all__ = [
-    "lprob_zero",
+    "lprob_add",
     "lprob_invalid",
-    "lprob_is_zero",
     "lprob_is_valid",
+    "lprob_is_zero",
     "lprob_normalize",
+    "lprob_zero",
 ]
+
+
+def lprob_add(a: float, b: float) -> float:
+    return lib.imm_lprob_add(a, b)
 
 
 def lprob_zero() -> float:

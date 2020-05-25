@@ -9,6 +9,7 @@ from ._hmm import HMM
 from ._input import Input
 from ._interval import Interval
 from ._lprob import (
+    lprob_add,
     lprob_invalid,
     lprob_is_valid,
     lprob_is_zero,
@@ -65,6 +66,7 @@ __all__ = [
     "TableState",
     "ffibuilder",
     "lib",
+    "lprob_add",
     "lprob_invalid",
     "lprob_is_valid",
     "lprob_is_zero",
