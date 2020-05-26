@@ -1,7 +1,6 @@
 from . import testing, wrap
 from ._alphabet import Alphabet
 from ._alphabet_table import AlphabetTable
-from ._build_ext import ffibuilder
 from ._cdata import CData
 from ._dp import DP
 from ._fragment import Fragment, FragStep
@@ -64,7 +63,7 @@ __all__ = [
     "Step",
     "SubSequence",
     "TableState",
-    "ffibuilder",
+    "build_ext",
     "lib",
     "lprob_add",
     "lprob_invalid",
