@@ -64,13 +64,16 @@ void imm_dp_destroy(struct imm_dp const *dp);
 struct imm_results const *imm_dp_viterbi(struct imm_dp const *dp,
                                          struct imm_seq const *seq,
                                          unsigned window_length);
+int imm_dp_change_trans(struct imm_dp *dp, struct imm_hmm *hmm,
+                        struct imm_state const *src_state,
+                        struct imm_state const *tgt_state, double lprob);
 
 /* HMM */
 int imm_hmm_add_state(struct imm_hmm *hmm, struct imm_state const *state,
                       double start_lprob);
 struct imm_hmm *imm_hmm_create(struct imm_abc const *abc);
-struct imm_dp const *imm_hmm_create_dp(struct imm_hmm const *hmm,
-                                       struct imm_state const *end_state);
+struct imm_dp *imm_hmm_create_dp(struct imm_hmm const *hmm,
+                                 struct imm_state const *end_state);
 int imm_hmm_del_state(struct imm_hmm *hmm, struct imm_state const *state);
 void imm_hmm_destroy(struct imm_hmm const *hmm);
 double imm_hmm_get_trans(struct imm_hmm const *hmm, struct imm_state const *src_state,
