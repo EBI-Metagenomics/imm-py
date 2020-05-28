@@ -61,6 +61,12 @@ class HMM(Generic[T]):
     def imm_hmm(self) -> CData:
         return self._imm_hmm
 
+    def find_state(self, name: bytes) -> T:
+        for state in self._states.values():
+            if state.name == name:
+                return state
+        raise ValueError("Could not find state by name.")
+
     def states(self) -> Dict[CData, T]:
         return self._states
 
@@ -102,6 +108,32 @@ class HMM(Generic[T]):
         err: int = lib.imm_hmm_set_trans(self._imm_hmm, a.imm_state, b.imm_state, lprob)
         if err != 0:
             raise RuntimeError("Could not set transition probability.")
+
+    def get_transition(self, a: T, b: T) -> float:
+        """
+        Parameters
+        ----------
+        a
+            Source state.
+        b
+            Destination state.
+
+        Returns
+        -------
+        lprob
+            Transition probability in log-space.
+        """
+        if a.imm_state not in self._states:
+            raise ValueError(f"State {a} not found.")
+
+        if b.imm_state not in self._states:
+            raise ValueError(f"State {b} not found.")
+
+        lprob: float = lib.imm_hmm_get_trans(self._imm_hmm, a.imm_state, b.imm_state)
+        if not lprob_is_valid(lprob):
+            raise RuntimeError("Could not get transition probability.")
+
+        return lprob
 
     @property
     def alphabet(self) -> Alphabet:
@@ -176,3 +208,17 @@ class HMM(Generic[T]):
     def __del__(self):
         if self._imm_hmm != ffi.NULL:
             lib.imm_hmm_destroy(self._imm_hmm)
+
+    def __str__(self):
+        msg = f"Alphabet: {self._alphabet}\n"
+        states = sorted(self._states.values(), key=lambda state: state.name)
+        for src in states:
+            msg += f"{src}\n"
+            for tgt in states:
+                lprob = self.get_transition(src, tgt)
+                if not lprob_is_valid(lprob):
+                    continue
+                if lprob_is_zero(lprob):
+                    continue
+                msg += f"->{tgt}:{lprob}\n"
+        return msg[:-1]
