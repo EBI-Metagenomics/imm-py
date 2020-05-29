@@ -24,6 +24,7 @@ from ._sequence import Sequence, SequenceABC, SubSequence
 from ._sequence_table import SequenceTable
 from ._state import MuteState, NormalState, State, StateType, TableState
 from ._step import Step
+from ._testit import test
 
 try:
     from ._ffi import lib
@@ -71,6 +72,7 @@ __all__ = [
     "lprob_is_zero",
     "lprob_normalize",
     "lprob_zero",
+    "test",
     "testing",
     "wrap",
 ]
