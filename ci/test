@@ -1,0 +1,3 @@
+#!/bin/bash
+
+(cd ~/ && python -c "import imm; import sys; sys.exit(imm.test())")
