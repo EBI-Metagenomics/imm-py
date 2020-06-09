@@ -14,6 +14,7 @@ matrix:
       env:
         - LIBRARY_PATH=/usr/local/lib
         - LD_LIBRARY_PATH=/usr/local/lib
+        - IMM_EXTRA_LINK_ARGS="-lm"
     - os: osx
       osx_image: xcode11.2
       env:
@@ -34,7 +35,6 @@ install:
   - curl -fsSL https://git.io/JerYI | GITHUB_USER=horta GITHUB_PROJECT=logaddexp bash
   - curl -fsSL https://git.io/JerYI | GITHUB_USER=EBI-Metagenomics GITHUB_PROJECT=imm bash
   - curl -fsSL $URL/check-readme.sh | bash
-  # - curl -fsSL $URL/py-min-deps.sh | bash -s -- --numpy --scipy
   - curl -fsSL $URL/py-check-style.sh | bash
   - curl -fsSL $URL/py-dev-test.sh | bash
   - curl -fsSL $URL/py-sdist-test.sh | bash
