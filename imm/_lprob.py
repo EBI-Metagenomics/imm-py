@@ -38,7 +38,7 @@ def lprob_normalize(arr: Iterable[float]):
 
     pyarr = list(arr)
     size = len(pyarr)
-    carr = ffi.new(f"double[{size}]", pyarr)
+    carr = ffi.new(f"float[{size}]", pyarr)
 
     err: int = lib.imm_lprob_normalize(carr, size)
     if err != 0:

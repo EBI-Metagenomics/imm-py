@@ -54,10 +54,10 @@ int imm_abc_write(struct imm_abc const *abc, FILE *stream);
 
 /* Alphabet table */
 struct imm_abc_table const *imm_abc_table_create(struct imm_abc const *abc,
-                                                 double const *lprobs);
+                                                 float const *lprobs);
 void imm_abc_table_destroy(struct imm_abc_table const *abc_table);
 struct imm_abc const *imm_abc_table_abc(struct imm_abc_table const *abc_table);
-double imm_abc_table_lprob(struct imm_abc_table const *abc_table, char symbol);
+float imm_abc_table_lprob(struct imm_abc_table const *abc_table, char symbol);
 
 /* DP */
 void imm_dp_destroy(struct imm_dp const *dp);
@@ -66,27 +66,27 @@ struct imm_results const *imm_dp_viterbi(struct imm_dp const *dp,
                                          unsigned window_length);
 int imm_dp_change_trans(struct imm_dp *dp, struct imm_hmm *hmm,
                         struct imm_state const *src_state,
-                        struct imm_state const *tgt_state, double lprob);
+                        struct imm_state const *tgt_state, float lprob);
 
 /* HMM */
 int imm_hmm_add_state(struct imm_hmm *hmm, struct imm_state const *state,
-                      double start_lprob);
+                      float start_lprob);
 struct imm_hmm *imm_hmm_create(struct imm_abc const *abc);
 struct imm_dp *imm_hmm_create_dp(struct imm_hmm const *hmm,
                                  struct imm_state const *end_state);
 int imm_hmm_del_state(struct imm_hmm *hmm, struct imm_state const *state);
 void imm_hmm_destroy(struct imm_hmm const *hmm);
-double imm_hmm_get_trans(struct imm_hmm const *hmm, struct imm_state const *src_state,
-                         struct imm_state const *tgt_state);
-double imm_hmm_likelihood(struct imm_hmm const *hmm, struct imm_seq const *seq,
-                          struct imm_path const *path);
+float imm_hmm_get_trans(struct imm_hmm const *hmm, struct imm_state const *src_state,
+                        struct imm_state const *tgt_state);
+float imm_hmm_likelihood(struct imm_hmm const *hmm, struct imm_seq const *seq,
+                         struct imm_path const *path);
 int imm_hmm_normalize(struct imm_hmm *hmm);
 int imm_hmm_normalize_start(struct imm_hmm *hmm);
 int imm_hmm_normalize_trans(struct imm_hmm *hmm, struct imm_state const *src_state);
-double imm_hmm_get_start(struct imm_hmm const *hmm, struct imm_state const *state);
-int imm_hmm_set_start(struct imm_hmm *hmm, struct imm_state const *state, double lprob);
+float imm_hmm_get_start(struct imm_hmm const *hmm, struct imm_state const *state);
+int imm_hmm_set_start(struct imm_hmm *hmm, struct imm_state const *state, float lprob);
 int imm_hmm_set_trans(struct imm_hmm *hmm, struct imm_state const *src_state,
-                      struct imm_state const *tgt_state, double lprob);
+                      struct imm_state const *tgt_state, float lprob);
 
 /* Input */
 int imm_input_close(struct imm_input *input);
@@ -119,7 +119,7 @@ int imm_mute_state_write(struct imm_state const *state, struct imm_model const *
 /* Normal state */
 struct imm_normal_state const *imm_normal_state_create(char const *name,
                                                        struct imm_abc const *abc,
-                                                       double const *lprobs);
+                                                       float const *lprobs);
 struct imm_normal_state const *imm_normal_state_derived(struct imm_state const *state);
 void imm_normal_state_destroy(struct imm_normal_state const *state);
 struct imm_state const *imm_normal_state_read(FILE *stream, struct imm_abc const *abc);
@@ -147,7 +147,7 @@ void imm_path_prepend(struct imm_path *path, struct imm_step *step);
 /* Result */
 void imm_result_destroy(struct imm_result const *result);
 void imm_result_free(struct imm_result const *result);
-double imm_result_loglik(struct imm_result const *result);
+float imm_result_loglik(struct imm_result const *result);
 struct imm_path const *imm_result_path(struct imm_result const *result);
 struct imm_subseq imm_result_subseq(struct imm_result const *result);
 
@@ -159,7 +159,7 @@ struct imm_result const *imm_results_get(struct imm_results const *results,
                                          unsigned idx);
 void imm_results_set(struct imm_results *results, unsigned idx,
                      struct imm_subseq subseq, struct imm_path const *path,
-                     double loglik);
+                     float loglik);
 unsigned imm_results_size(struct imm_results const *results);
 
 /* Sequence */
@@ -174,12 +174,11 @@ char const *imm_seq_string(struct imm_seq const *seq);
 /* Sequence table */
 struct imm_abc const *imm_seq_table_abc(struct imm_seq_table const *table);
 int imm_seq_table_add(struct imm_seq_table *table, struct imm_seq const *seq,
-                      double lprob);
+                      float lprob);
 struct imm_seq_table *imm_seq_table_clone(struct imm_seq_table const *table);
 struct imm_seq_table *imm_seq_table_create(struct imm_abc const *abc);
 void imm_seq_table_destroy(struct imm_seq_table const *table);
-double imm_seq_table_lprob(struct imm_seq_table const *table,
-                           struct imm_seq const *seq);
+float imm_seq_table_lprob(struct imm_seq_table const *table, struct imm_seq const *seq);
 uint8_t imm_seq_table_max_seq(struct imm_seq_table const *table);
 uint8_t imm_seq_table_min_seq(struct imm_seq_table const *table);
 int imm_seq_table_normalize(struct imm_seq_table *table);
@@ -190,7 +189,7 @@ struct imm_state const *imm_state_create(char const *name, struct imm_abc const 
 void imm_state_destroy(struct imm_state const *state);
 struct imm_abc const *imm_state_get_abc(struct imm_state const *state);
 char const *imm_state_get_name(struct imm_state const *state);
-double imm_state_lprob(struct imm_state const *state, struct imm_seq const *seq);
+float imm_state_lprob(struct imm_state const *state, struct imm_seq const *seq);
 uint8_t imm_state_max_seq(struct imm_state const *state);
 uint8_t imm_state_min_seq(struct imm_state const *state);
 uint8_t imm_state_type_id(struct imm_state const *state);
@@ -229,10 +228,10 @@ struct imm_subseq imm_window_get(struct imm_window const *window, unsigned index
 unsigned imm_window_size(struct imm_window const *window);
 
 /* Probabilities */
-double imm_lprob_add(double a, double b);
-double imm_lprob_invalid(void);
-bool imm_lprob_is_valid(double a);
-bool imm_lprob_is_zero(double a);
-int imm_lprob_normalize(double *arr, size_t len);
-double imm_lprob_sum(double const *arr, size_t len);
-double imm_lprob_zero(void);
+float imm_lprob_add(float a, float b);
+float imm_lprob_invalid(void);
+bool imm_lprob_is_valid(float a);
+bool imm_lprob_is_zero(float a);
+int imm_lprob_normalize(float *arr, size_t len);
+float imm_lprob_sum(float const *arr, size_t len);
+float imm_lprob_zero(void);

@@ -41,7 +41,7 @@ class AlphabetTable:
             Log probability of each nucleotide.
         """
         imm_abc_table = lib.imm_abc_table_create(
-            alphabet.imm_abc, ffi.new("double[]", lprobs)
+            alphabet.imm_abc, ffi.new("float[]", lprobs)
         )
         return cls(imm_abc_table, alphabet)
 
