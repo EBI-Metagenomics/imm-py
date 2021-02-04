@@ -36,10 +36,6 @@ class Result(Generic[T]):
         self._sequence = sequence
 
     @property
-    def loglikelihood(self) -> float:
-        return lib.imm_result_loglik(self._imm_result)
-
-    @property
     def path(self) -> Path[Step[T]]:
         return self._path
 
@@ -50,6 +46,3 @@ class Result(Generic[T]):
     def __del__(self):
         if self._imm_result != ffi.NULL:
             lib.imm_result_free(self._imm_result)
-
-    def __repr__(self) -> str:
-        return str(self.loglikelihood)

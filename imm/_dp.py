@@ -5,8 +5,8 @@ from ._cdata import CData
 from ._ffi import ffi, lib
 from ._hmm import HMM
 from ._results import Results
-from ._sequence import Sequence
 from ._state import State
+from ._dp_task import DPTask
 
 __all__ = ["DP"]
 
@@ -24,14 +24,12 @@ class DP(Generic[T]):
     def imm_dp(self) -> CData:
         return self._imm_dp
 
-    def viterbi(self, seq: Sequence, window_length: int = 0) -> Results[T]:
-
-        imm_seq = seq.imm_seq
-        imm_results = lib.imm_dp_viterbi(self._imm_dp, imm_seq, window_length)
+    def viterbi(self, task: DPTask) -> Results[T]:
+        imm_results = lib.imm_dp_viterbi(self._imm_dp, task.imm_dp_task)
         if imm_results == ffi.NULL:
             raise RuntimeError("Could not run viterbi.")
 
-        return wrap.imm_results(imm_results, seq, self._hmm.states())
+        return wrap.imm_results(imm_results, task.sequence, self._hmm.states())
 
     def __del__(self):
         if self._imm_dp != ffi.NULL:

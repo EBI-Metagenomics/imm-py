@@ -17,6 +17,8 @@ struct imm_step;
 struct imm_table_state;
 struct imm_window;
 
+typedef double imm_float;
+
 #define IMM_MUTE_STATE_TYPE_ID 0x00
 #define IMM_NORMAL_STATE_TYPE_ID 0x01
 #define IMM_TABLE_STATE_TYPE_ID 0x02
@@ -68,6 +70,10 @@ void                      imm_dp_destroy(struct imm_dp const* dp);
 struct imm_results const* imm_dp_viterbi(struct imm_dp const* dp, struct imm_dp_task* task);
 int imm_dp_change_trans(struct imm_dp* dp, struct imm_hmm* hmm, struct imm_state const* src_state,
                         struct imm_state const* tgt_state, imm_float lprob);
+/* DP task */
+struct imm_dp_task* imm_dp_task_create(struct imm_dp const* dp);
+void imm_dp_task_setup(struct imm_dp_task* task, struct imm_seq const* seq, uint16_t window_length);
+void imm_dp_task_destroy(struct imm_dp_task const* dp_task);
 
 /* HMM */
 int imm_hmm_add_state(struct imm_hmm* hmm, struct imm_state const* state, imm_float start_lprob);

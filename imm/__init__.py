@@ -17,6 +17,7 @@ from ._lprob import (
 )
 from ._model import Model
 from ._output import Output
+from ._dp_task import DPTask
 from ._path import Path
 from ._result import Result
 from ._results import Results
@@ -44,6 +45,7 @@ __all__ = [
     "AlphabetTable",
     "CData",
     "DP",
+    "DPTask",
     "FragStep",
     "Fragment",
     "HMM",

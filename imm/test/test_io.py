@@ -13,6 +13,7 @@ from imm import (
     Output,
     Sequence,
     lprob_zero,
+    DPTask,
 )
 from imm.testing import assert_allclose
 
@@ -51,8 +52,10 @@ def test_io(tmpdir, imm_example):
     hmm = imm_example["hmm"]
     dp = imm_example["dp"]
 
-    score = dp.viterbi(Sequence.create(b"AC", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.48))
+    dp_task = DPTask.create(dp)
+    dp_task.setup(Sequence.create(b"AC", alphabet))
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(r.sequence, r.path), log(0.48))
 
     filepath = Path(tmpdir / "model.imm")
     with Output.create(bytes(filepath)) as output:
@@ -64,9 +67,11 @@ def test_io(tmpdir, imm_example):
     nmodels = 0
     for model in input:
         alphabet = model.alphabet
-        seq = Sequence.create(b"AC", alphabet)
-        score = model.dp.viterbi(seq)[0].loglikelihood
-        assert_allclose(score, log(0.48))
+        dp_task = DPTask.create(model.dp)
+        dp_task.setup(Sequence.create(b"AC", alphabet))
+        r = model.dp.viterbi(dp_task)[0]
+        hmm = model.hmm
+        assert_allclose(hmm.likelihood(r.sequence, r.path), log(0.48))
         nmodels += 1
     input.close()
     assert nmodels == 3
@@ -75,8 +80,10 @@ def test_io(tmpdir, imm_example):
         nmodels = 0
         for model in input:
             alphabet = model.alphabet
-            seq = Sequence.create(b"AC", alphabet)
-            score = model.dp.viterbi(seq)[0].loglikelihood
-            assert_allclose(score, log(0.48))
+            dp_task = DPTask.create(model.dp)
+            dp_task.setup(Sequence.create(b"AC", alphabet))
+            r = model.dp.viterbi(dp_task)[0]
+            hmm = model.hmm
+            assert_allclose(hmm.likelihood(r.sequence, r.path), log(0.48))
             nmodels += 1
         assert nmodels == 3

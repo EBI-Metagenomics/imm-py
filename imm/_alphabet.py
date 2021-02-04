@@ -24,7 +24,7 @@ class Alphabet:
     """
 
     def __init__(self, imm_abc: CData):
-        super().__init__()
+        self._imm_abc = ffi.NULL
         if imm_abc == ffi.NULL:
             raise RuntimeError("`imm_abc` is NULL.")
         self._imm_abc = imm_abc
@@ -43,7 +43,6 @@ class Alphabet:
         """
         if len(any_symbol) != 1:
             raise ValueError("`any_symbol` has length different than 1.")
-        super().__init__(lib.imm_abc_create(symbols, any_symbol))
         return cls(lib.imm_abc_create(symbols, any_symbol))
 
     @property

@@ -14,6 +14,7 @@ from imm import (
     TableState,
     lprob_invalid,
     lprob_zero,
+    DPTask,
 )
 from imm.testing import assert_allclose
 
@@ -393,9 +394,12 @@ def test_hmm_viterbi_1():
     assert_allclose(hmm.transition(E, S), lprob_zero())
 
     dp = hmm.create_dp(E)
-    results = dp.viterbi(Sequence.create(b"AC", alphabet))
+    dp_task = DPTask.create(dp)
+    seq = Sequence.create(b"AC", alphabet)
+    dp_task.setup(seq)
+    results = dp.viterbi(dp_task)
     assert len(results) == 1
-    assert_allclose(results[0].loglikelihood, log(0.3))
+    assert_allclose(hmm.likelihood(seq, results[0].path), log(0.3))
 
 
 def test_hmm_viterbi_2():
@@ -422,26 +426,41 @@ def test_hmm_viterbi_2():
     hmm.set_transition(E, E, lprob_zero())
 
     dp = hmm.create_dp(E)
-    score = dp.viterbi(Sequence.create(b"AC", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.48))
+    dp_task = DPTask.create(dp)
 
-    score = dp.viterbi(Sequence.create(b"AA", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.32))
+    seq = Sequence.create(b"AC", alphabet)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.48))
 
-    score = dp.viterbi(Sequence.create(b"CA", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.08))
+    seq = Sequence.create(b"AA", alphabet)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.32))
 
-    score = dp.viterbi(Sequence.create(b"CC", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.12))
+    seq = Sequence.create(b"CA", alphabet)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.08))
+
+    seq = Sequence.create(b"CC", alphabet)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.12))
 
     hmm.set_transition(M1, E, log(1.0))
 
+    seq = Sequence.create(b"AC", alphabet)
     dp = hmm.create_dp(E)
-    score = dp.viterbi(Sequence.create(b"AC", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.48))
+    dp_task = DPTask.create(dp)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.48))
 
-    score = dp.viterbi(Sequence.create(b"AA", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.32))
+    seq = Sequence.create(b"AA", alphabet)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.32))
 
 
 def test_hmm_viterbi_3():
@@ -482,8 +501,11 @@ def test_hmm_viterbi_3():
     hmm.set_transition(E, E, lprob_zero())
 
     dp = hmm.create_dp(E)
-    results = dp.viterbi(Sequence.create(b"AC", alphabet))
-    score = results[0].loglikelihood
+    dp_task = DPTask.create(dp)
+    seq = Sequence.create(b"AC", alphabet)
+    dp_task.setup(seq)
+    results = dp.viterbi(dp_task)
+    score = hmm.likelihood(seq, results[0].path)
     assert bytes(results[0].sequence) == b"AC"
     path = results[0].path
     steps = list(path)
@@ -494,35 +516,49 @@ def test_hmm_viterbi_3():
 
     assert_allclose(score, log(0.3072))
 
-    score = dp.viterbi(Sequence.create(b"AA", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.2048))
+    seq = Sequence.create(b"AA", alphabet)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.2048))
 
-    score = dp.viterbi(Sequence.create(b"A", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.128))
+    seq = Sequence.create(b"A", alphabet)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.128))
 
-    score = dp.viterbi(Sequence.create(b"AC", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.3072))
+    seq = Sequence.create(b"AC", alphabet)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.3072))
 
     dp = hmm.create_dp(M2)
-    score = dp.viterbi(Sequence.create(b"AC", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.3072))
+    dp_task = DPTask.create(dp)
+    seq = Sequence.create(b"AC", alphabet)
+    dp_task.setup(seq)
+    r = dp.viterbi(dp_task)[0]
+    assert_allclose(hmm.likelihood(seq, r.path), log(0.3072))
 
     hmm.del_state(E)
 
     dp = hmm.create_dp(M2)
-    score = dp.viterbi(Sequence.create(b"AC", alphabet))[0].loglikelihood
-    assert_allclose(score, log(0.3072))
+    dp_task = DPTask.create(dp)
+    seq = Sequence.create(b"AC", alphabet)
+    dp_task.setup(seq)
+    results = dp.viterbi(dp_task)
+    assert_allclose(hmm.likelihood(seq, results[0].path), log(0.3072))
 
-    results = dp.viterbi(Sequence.create(b"ACAC", alphabet), 2)
+    seq = Sequence.create(b"ACAC", alphabet)
+    dp_task.setup(seq, 2)
+    results = dp.viterbi(dp_task)
     assert len(results) == 3
 
-    assert_allclose(results[0].loglikelihood, log(0.3072))
+    assert_allclose(hmm.likelihood(results[0].sequence, results[0].path), log(0.3072))
     assert bytes(results[0].sequence) == b"AC"
 
-    assert_allclose(results[1].loglikelihood, log(0.0512))
+    assert_allclose(hmm.likelihood(results[1].sequence, results[1].path), log(0.0512))
     assert bytes(results[1].sequence) == b"CA"
 
-    assert_allclose(results[2].loglikelihood, log(0.3072))
+    assert_allclose(hmm.likelihood(results[2].sequence, results[2].path), log(0.3072))
     assert bytes(results[2].sequence) == b"AC"
 
     assert results[1].path[1].seq_len == 1

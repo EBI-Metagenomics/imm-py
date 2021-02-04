@@ -36,6 +36,7 @@ def lprob_is_valid(x: float):
 def lprob_normalize(arr: Iterable[float]):
     from array import array
 
+    # FIXME: check float size against imm_float
     pyarr = list(arr)
     size = len(pyarr)
     carr = ffi.new(f"double[{size}]", pyarr)

@@ -50,6 +50,8 @@ class Sequence(SequenceABC[T]):
     """
 
     def __init__(self, imm_seq: CData, alphabet: T):
+        super().__init__()
+        self._imm_seq = ffi.NULL
         if imm_seq == ffi.NULL:
             raise RuntimeError("`imm_seq` is NULL.")
         self._imm_seq = imm_seq
