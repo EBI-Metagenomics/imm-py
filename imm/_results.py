@@ -26,7 +26,10 @@ class Results(Generic[T]):
     """
 
     def __init__(
-        self, imm_results: CData, results: Iterable[Result[T]], sequence: SequenceABC,
+        self,
+        imm_results: CData,
+        results: Iterable[Result[T]],
+        sequence: SequenceABC,
     ):
         if imm_results == ffi.NULL:
             raise RuntimeError("`imm_results` is NULL.")

@@ -11,7 +11,9 @@ def test_fragment():
     S = MuteState.create(b"S", alphabet)
     E = MuteState.create(b"E", alphabet)
     M1 = NormalState.create(
-        b"M1", alphabet, [log(0.8), log(0.2), log(0.01), log(0.01)],
+        b"M1",
+        alphabet,
+        [log(0.8), log(0.2), log(0.01), log(0.01)],
     )
     M2 = NormalState.create(b"M2", alphabet, [log(0.4), log(0.6), log(0.1), log(0.6)])
 

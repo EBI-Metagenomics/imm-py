@@ -3,6 +3,7 @@ from ._alphabet import Alphabet
 from ._alphabet_table import AlphabetTable
 from ._cdata import CData
 from ._dp import DP
+from ._dp_task import DPTask
 from ._fragment import Fragment, FragStep
 from ._hmm import HMM
 from ._input import Input
@@ -17,7 +18,6 @@ from ._lprob import (
 )
 from ._model import Model
 from ._output import Output
-from ._dp_task import DPTask
 from ._path import Path
 from ._result import Result
 from ._results import Results

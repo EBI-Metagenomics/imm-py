@@ -27,7 +27,10 @@ class Result(Generic[T]):
     """
 
     def __init__(
-        self, imm_result: CData, path: Path[Step[T]], sequence: SubSequence,
+        self,
+        imm_result: CData,
+        path: Path[Step[T]],
+        sequence: SubSequence,
     ):
         if imm_result == ffi.NULL:
             raise RuntimeError("`imm_result` is NULL.")

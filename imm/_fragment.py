@@ -46,7 +46,9 @@ class Fragment(Generic[TAlphabet, TState]):
     """
 
     def __init__(
-        self, sequence: SequenceABC[TAlphabet], path: Path[Step[TState]],
+        self,
+        sequence: SequenceABC[TAlphabet],
+        path: Path[Step[TState]],
     ):
         self._sequence = sequence
         self._path = path

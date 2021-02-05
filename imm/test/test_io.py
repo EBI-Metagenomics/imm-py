@@ -6,6 +6,7 @@ import pytest
 from imm import (
     HMM,
     Alphabet,
+    DPTask,
     Input,
     Model,
     MuteState,
@@ -13,7 +14,6 @@ from imm import (
     Output,
     Sequence,
     lprob_zero,
-    DPTask,
 )
 from imm.testing import assert_allclose
 

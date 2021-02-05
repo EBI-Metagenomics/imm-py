@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from typing import Type, Optional, TypeVar, Generic
+from typing import TYPE_CHECKING, Generic, Optional, Type, TypeVar
 
 from ._cdata import CData
+from ._ffi import ffi, lib
 from ._sequence import Sequence
 from ._state import State
-from ._ffi import ffi, lib
 
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ._dp import DP
 

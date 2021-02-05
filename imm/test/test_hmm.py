@@ -5,6 +5,7 @@ import pytest
 from imm import (
     HMM,
     Alphabet,
+    DPTask,
     MuteState,
     NormalState,
     Path,
@@ -14,7 +15,6 @@ from imm import (
     TableState,
     lprob_invalid,
     lprob_zero,
-    DPTask,
 )
 from imm.testing import assert_allclose
 
@@ -107,7 +107,9 @@ def test_hmm_likelihood():
     hmm.add_state(E, lprob_zero())
 
     M1 = NormalState.create(
-        b"M1", alphabet, [log(0.8), log(0.2), lprob_zero(), lprob_zero()],
+        b"M1",
+        alphabet,
+        [log(0.8), log(0.2), lprob_zero(), lprob_zero()],
     )
     hmm.add_state(M1, lprob_zero())
 
@@ -344,7 +346,9 @@ def test_hmm_likelihood():
     assert_allclose(p, lprob_zero())
 
     M3 = NormalState.create(
-        b"M2", alphabet, [log(0.4), log(0.6), lprob_zero(), log(0.6)],
+        b"M2",
+        alphabet,
+        [log(0.4), log(0.6), lprob_zero(), log(0.6)],
     )
 
     with pytest.raises(ValueError):
@@ -372,12 +376,16 @@ def test_hmm_viterbi_1():
     hmm.add_state(E, lprob_zero())
 
     M1 = NormalState.create(
-        b"M1", alphabet, [log(0.8), log(0.2), lprob_zero(), lprob_zero()],
+        b"M1",
+        alphabet,
+        [log(0.8), log(0.2), lprob_zero(), lprob_zero()],
     )
     hmm.add_state(M1, lprob_zero())
 
     M2 = NormalState.create(
-        b"M2", alphabet, [log(0.4 / 1.6), log(0.6 / 1.6), lprob_zero(), log(0.6 / 1.6)],
+        b"M2",
+        alphabet,
+        [log(0.4 / 1.6), log(0.6 / 1.6), lprob_zero(), log(0.6 / 1.6)],
     )
     hmm.add_state(M2, lprob_zero())
 

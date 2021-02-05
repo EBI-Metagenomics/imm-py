@@ -2,11 +2,11 @@ from typing import Generic, TypeVar
 
 from . import wrap
 from ._cdata import CData
+from ._dp_task import DPTask
 from ._ffi import ffi, lib
 from ._hmm import HMM
 from ._results import Results
 from ._state import State
-from ._dp_task import DPTask
 
 __all__ = ["DP"]
 

@@ -18,7 +18,9 @@ def test_normal_state():
     alphabet = Alphabet.create(b"ACGT", b"X")
 
     state = NormalState.create(
-        b"M0", alphabet, [log(0.1), log(0.2), log(0.3), log(0.3)],
+        b"M0",
+        alphabet,
+        [log(0.1), log(0.2), log(0.3), log(0.3)],
     )
     assert state.name == b"M0"
     assert state.lprob(Sequence.create(b"A", alphabet)) == log(0.1)
