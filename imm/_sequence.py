@@ -19,21 +19,21 @@ class SequenceABC(Generic[T], ABC):
     """
 
     @abstractmethod
-    def __len__(self) -> int:
+    def __len__(_) -> int:
         raise NotImplementedError()
 
     @abstractmethod
-    def __bytes__(self) -> bytes:
+    def __bytes__(_) -> bytes:
         raise NotImplementedError()
 
     @abstractmethod
-    def __getitem__(self, i: Union[int, slice, Interval]):
+    def __getitem__(_, i: Union[int, slice, Interval]):
         del i
         raise NotImplementedError()
 
     @property
     @abstractmethod
-    def alphabet(self) -> T:
+    def alphabet(_) -> T:
         raise NotImplementedError()
 
 
@@ -83,7 +83,7 @@ class Sequence(SequenceABC[T]):
 
     def __getitem__(self, i: Union[int, slice, Interval]):
         if isinstance(i, int):
-            return bytes(self)[i : i + 1]
+            return bytes(self)[i: i + 1]
         if isinstance(i, slice):
             interval = Interval.from_slice(i)
         elif isinstance(i, Interval):
@@ -168,7 +168,7 @@ class SubSequence(SequenceABC[T]):
 
     def __getitem__(self, i: Union[int, slice, Interval]):
         if isinstance(i, int):
-            return bytes(self)[i : i + 1]
+            return bytes(self)[i: i + 1]
         if isinstance(i, slice):
             interval = Interval.from_slice(i)
         elif isinstance(i, Interval):
