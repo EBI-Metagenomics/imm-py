@@ -1,5 +1,4 @@
 include LICENSE.md
 include README.md
-include build_ext.py
 include imm/imm.h
 include version.py
