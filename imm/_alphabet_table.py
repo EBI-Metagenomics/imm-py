@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Sequence, Type
 
+from .build_ext import imm_float
 from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
@@ -41,7 +42,7 @@ class AlphabetTable:
             Log probability of each nucleotide.
         """
         imm_abc_table = lib.imm_abc_table_create(
-            alphabet.imm_abc, ffi.new("double[]", lprobs)
+            alphabet.imm_abc, ffi.new(f"{imm_float}[]", lprobs)
         )
         return cls(imm_abc_table, alphabet)
 

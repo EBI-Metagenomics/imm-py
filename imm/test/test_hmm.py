@@ -96,7 +96,7 @@ def test_hmm_trans_prob():
     assert_allclose(hmm.transition(E, E), log(1.0))
 
 
-def test_hmm_likelihood():
+def test_hmm_loglikelihood():
     alphabet = Alphabet.create(b"ACGU", b"X")
     hmm = HMM.create(alphabet)
 
@@ -124,7 +124,7 @@ def test_hmm_likelihood():
     hmm.set_transition(E, E, log(1.0))
     hmm.normalize()
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"AC", alphabet),
         Path.create(
             [
@@ -137,7 +137,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, log(0.3))
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"AA", alphabet),
         Path.create(
             [
@@ -150,7 +150,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, log(0.2))
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"AG", alphabet),
         Path.create(
             [
@@ -163,7 +163,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"AU", alphabet),
         Path.create(
             [
@@ -176,7 +176,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, log(0.3))
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"CC", alphabet),
         Path.create(
             [
@@ -189,7 +189,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, log(0.075))
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"CA", alphabet),
         Path.create(
             [
@@ -202,7 +202,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, log(0.05))
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"CG", alphabet),
         Path.create(
             [
@@ -215,7 +215,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"CG", alphabet),
         Path.create(
             [
@@ -228,7 +228,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"CU", alphabet),
         Path.create(
             [
@@ -241,7 +241,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, log(0.075))
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"GC", alphabet),
         Path.create(
             [
@@ -254,7 +254,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"GA", alphabet),
         Path.create(
             [
@@ -267,7 +267,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"GG", alphabet),
         Path.create(
             [
@@ -280,7 +280,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"GU", alphabet),
         Path.create(
             [
@@ -293,7 +293,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"UC", alphabet),
         Path.create(
             [
@@ -306,7 +306,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"UA", alphabet),
         Path.create(
             [
@@ -319,7 +319,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"UG", alphabet),
         Path.create(
             [
@@ -332,7 +332,7 @@ def test_hmm_likelihood():
     )
     assert_allclose(p, lprob_zero())
 
-    p = hmm.likelihood(
+    p = hmm.loglikelihood(
         Sequence.create(b"UU", alphabet),
         Path.create(
             [
@@ -352,7 +352,7 @@ def test_hmm_likelihood():
     )
 
     with pytest.raises(ValueError):
-        hmm.likelihood(
+        hmm.loglikelihood(
             Sequence.create(b"UU", alphabet),
             Path.create(
                 [
@@ -407,7 +407,7 @@ def test_hmm_viterbi_1():
     dp_task.setup(seq)
     results = dp.viterbi(dp_task)
     assert len(results) == 1
-    assert_allclose(hmm.likelihood(seq, results[0].path), log(0.3))
+    assert_allclose(hmm.loglikelihood(seq, results[0].path), log(0.3))
 
 
 def test_hmm_viterbi_2():
@@ -439,22 +439,22 @@ def test_hmm_viterbi_2():
     seq = Sequence.create(b"AC", alphabet)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.48))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.48))
 
     seq = Sequence.create(b"AA", alphabet)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.32))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.32))
 
     seq = Sequence.create(b"CA", alphabet)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.08))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.08))
 
     seq = Sequence.create(b"CC", alphabet)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.12))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.12))
 
     hmm.set_transition(M1, E, log(1.0))
 
@@ -463,12 +463,12 @@ def test_hmm_viterbi_2():
     dp_task = DPTask.create(dp)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.48))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.48))
 
     seq = Sequence.create(b"AA", alphabet)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.32))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.32))
 
 
 def test_hmm_viterbi_3():
@@ -513,7 +513,7 @@ def test_hmm_viterbi_3():
     seq = Sequence.create(b"AC", alphabet)
     dp_task.setup(seq)
     results = dp.viterbi(dp_task)
-    score = hmm.likelihood(seq, results[0].path)
+    score = hmm.loglikelihood(seq, results[0].path)
     assert bytes(results[0].sequence) == b"AC"
     path = results[0].path
     steps = list(path)
@@ -527,24 +527,24 @@ def test_hmm_viterbi_3():
     seq = Sequence.create(b"AA", alphabet)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.2048))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.2048))
 
     seq = Sequence.create(b"A", alphabet)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.128))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.128))
 
     seq = Sequence.create(b"AC", alphabet)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.3072))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.3072))
 
     dp = hmm.create_dp(M2)
     dp_task = DPTask.create(dp)
     seq = Sequence.create(b"AC", alphabet)
     dp_task.setup(seq)
     r = dp.viterbi(dp_task)[0]
-    assert_allclose(hmm.likelihood(seq, r.path), log(0.3072))
+    assert_allclose(hmm.loglikelihood(seq, r.path), log(0.3072))
 
     hmm.del_state(E)
 
@@ -553,20 +553,20 @@ def test_hmm_viterbi_3():
     seq = Sequence.create(b"AC", alphabet)
     dp_task.setup(seq)
     results = dp.viterbi(dp_task)
-    assert_allclose(hmm.likelihood(seq, results[0].path), log(0.3072))
+    assert_allclose(hmm.loglikelihood(seq, results[0].path), log(0.3072))
 
     seq = Sequence.create(b"ACAC", alphabet)
     dp_task.setup(seq, 2)
     results = dp.viterbi(dp_task)
     assert len(results) == 3
 
-    assert_allclose(hmm.likelihood(results[0].sequence, results[0].path), log(0.3072))
+    assert_allclose(hmm.loglikelihood(results[0].sequence, results[0].path), log(0.3072))
     assert bytes(results[0].sequence) == b"AC"
 
-    assert_allclose(hmm.likelihood(results[1].sequence, results[1].path), log(0.0512))
+    assert_allclose(hmm.loglikelihood(results[1].sequence, results[1].path), log(0.0512))
     assert bytes(results[1].sequence) == b"CA"
 
-    assert_allclose(hmm.likelihood(results[2].sequence, results[2].path), log(0.3072))
+    assert_allclose(hmm.loglikelihood(results[2].sequence, results[2].path), log(0.3072))
     assert bytes(results[2].sequence) == b"AC"
 
     assert results[1].path[1].seq_len == 1

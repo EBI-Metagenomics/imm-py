@@ -23,10 +23,10 @@ def test_normal_state():
         [log(0.1), log(0.2), log(0.3), log(0.3)],
     )
     assert state.name == b"M0"
-    assert state.lprob(Sequence.create(b"A", alphabet)) == log(0.1)
-    assert state.lprob(Sequence.create(b"C", alphabet)) == log(0.2)
-    assert state.lprob(Sequence.create(b"G", alphabet)) == log(0.3)
-    assert state.lprob(Sequence.create(b"T", alphabet)) == log(0.3)
+    assert_allclose(state.lprob(Sequence.create(b"A", alphabet)), log(0.1))
+    assert_allclose(state.lprob(Sequence.create(b"C", alphabet)), log(0.2))
+    assert_allclose(state.lprob(Sequence.create(b"G", alphabet)), log(0.3))
+    assert_allclose(state.lprob(Sequence.create(b"T", alphabet)), log(0.3))
     assert state.min_seq == 1
     assert state.max_seq == 1
 
@@ -44,7 +44,7 @@ def test_mute_state():
     state = MuteState.create(b"S", alphabet)
 
     assert state.name == b"S"
-    assert state.lprob(Sequence.create(b"", alphabet)) == log(1.0)
+    assert_allclose(state.lprob(Sequence.create(b"", alphabet)), log(1.0))
     assert lprob_is_zero(state.lprob(Sequence.create(b"AC", alphabet)))
     assert state.min_seq == 0
     assert state.max_seq == 0

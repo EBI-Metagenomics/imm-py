@@ -2,6 +2,7 @@ from math import inf, isinf, isnan, nan
 from typing import Iterable
 
 from ._ffi import ffi, lib
+from .build_ext import imm_float
 
 __all__ = [
     "lprob_add",
@@ -39,7 +40,7 @@ def lprob_normalize(arr: Iterable[float]):
     # FIXME: check float size against imm_float
     pyarr = list(arr)
     size = len(pyarr)
-    carr = ffi.new(f"double[{size}]", pyarr)
+    carr = ffi.new(f"{imm_float}[{size}]", pyarr)
 
     err: int = lib.imm_lprob_normalize(carr, size)
     if err != 0:
