@@ -24,7 +24,6 @@ class Alphabet:
     """
 
     def __init__(self, imm_abc: CData):
-        self._imm_abc = ffi.NULL
         if imm_abc == ffi.NULL:
             raise RuntimeError("`imm_abc` is NULL.")
         self._imm_abc = imm_abc
@@ -71,7 +70,7 @@ class Alphabet:
         return lib.imm_abc_any_symbol(self._imm_abc)
 
     def __del__(self):
-        if self._imm_abc != ffi.NULL:
+        if hasattr(self, "_imm_abc") and self._imm_abc != ffi.NULL:
             lib.imm_abc_destroy(self._imm_abc)
 
     def __str__(self) -> str:
