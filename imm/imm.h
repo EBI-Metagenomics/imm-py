@@ -17,7 +17,7 @@ struct imm_step;
 struct imm_table_state;
 struct imm_window;
 
-typedef double imm_float;
+typedef __IMM_FLOAT__ imm_float;
 
 #define IMM_MUTE_STATE_TYPE_ID 0x00
 #define IMM_NORMAL_STATE_TYPE_ID 0x01
@@ -83,8 +83,8 @@ int             imm_hmm_del_state(struct imm_hmm* hmm, struct imm_state const* s
 void            imm_hmm_destroy(struct imm_hmm const* hmm);
 imm_float       imm_hmm_get_trans(struct imm_hmm const* hmm, struct imm_state const* src_state,
                                   struct imm_state const* tgt_state);
-imm_float       imm_hmm_likelihood(struct imm_hmm const* hmm, struct imm_seq const* seq,
-                                   struct imm_path const* path);
+imm_float       imm_hmm_loglikelihood(struct imm_hmm const* hmm, struct imm_seq const* seq,
+                                      struct imm_path const* path);
 int             imm_hmm_normalize(struct imm_hmm* hmm);
 int             imm_hmm_normalize_start(struct imm_hmm* hmm);
 int             imm_hmm_normalize_trans(struct imm_hmm* hmm, struct imm_state const* src_state);
