@@ -560,13 +560,19 @@ def test_hmm_viterbi_3():
     results = dp.viterbi(dp_task)
     assert len(results) == 3
 
-    assert_allclose(hmm.loglikelihood(results[0].sequence, results[0].path), log(0.3072))
+    assert_allclose(
+        hmm.loglikelihood(results[0].sequence, results[0].path), log(0.3072)
+    )
     assert bytes(results[0].sequence) == b"AC"
 
-    assert_allclose(hmm.loglikelihood(results[1].sequence, results[1].path), log(0.0512))
+    assert_allclose(
+        hmm.loglikelihood(results[1].sequence, results[1].path), log(0.0512)
+    )
     assert bytes(results[1].sequence) == b"CA"
 
-    assert_allclose(hmm.loglikelihood(results[2].sequence, results[2].path), log(0.3072))
+    assert_allclose(
+        hmm.loglikelihood(results[2].sequence, results[2].path), log(0.3072)
+    )
     assert bytes(results[2].sequence) == b"AC"
 
     assert results[1].path[1].seq_len == 1

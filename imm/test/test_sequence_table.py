@@ -29,4 +29,6 @@ def test_sequence_table():
     seqt.normalize()
 
     assert_allclose(seqt.lprob(Sequence.create(b"AGTG", alphabet)), log(0.2 / 1.4))
-    assert_allclose(seqt.lprob(Sequence.create(b"T", alphabet)), log(1.2 / 1.4), rtol=1e-6)
+    assert_allclose(
+        seqt.lprob(Sequence.create(b"T", alphabet)), log(1.2 / 1.4), rtol=1e-6
+    )

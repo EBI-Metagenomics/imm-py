@@ -172,7 +172,9 @@ class HMM(Generic[T]):
             raise ValueError("Normalization error.")
 
     def loglikelihood(self, seq: Sequence, path: Path) -> float:
-        lprob: float = lib.imm_hmm_loglikelihood(self._imm_hmm, seq.imm_seq, path.imm_path)
+        lprob: float = lib.imm_hmm_loglikelihood(
+            self._imm_hmm, seq.imm_seq, path.imm_path
+        )
         if not lprob_is_valid(lprob):
             raise ValueError("Could not calculate the loglikelihood.")
         return lprob

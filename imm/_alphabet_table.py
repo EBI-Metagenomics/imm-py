@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Sequence, Type
 
-from .build_ext import imm_float
 from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._lprob import lprob_is_valid
+from .build_ext import imm_float
 
 
 class AlphabetTable:
