@@ -9,21 +9,21 @@ from ._step import Step
 
 __all__ = ["FragStep", "Fragment"]
 
-TAlphabet = TypeVar("TAlphabet", bound=Alphabet)
-TState = TypeVar("TState", bound=State)
+A = TypeVar("A", bound=Alphabet)
+T = TypeVar("T", bound=State)
 
 
-class FragStep(Generic[TAlphabet, TState]):
-    def __init__(self, sequence: SequenceABC[TAlphabet], step: Step[TState]):
+class FragStep(Generic[A, T]):
+    def __init__(self, sequence: SequenceABC[A], step: Step[A, T]):
         self._sequence = sequence
         self._step = step
 
     @property
-    def sequence(self) -> SequenceABC[TAlphabet]:
+    def sequence(self) -> SequenceABC[A]:
         return self._sequence
 
     @property
-    def step(self) -> Step[TState]:
+    def step(self) -> Step[A, T]:
         return self._step
 
     def __str__(self) -> str:
@@ -33,7 +33,7 @@ class FragStep(Generic[TAlphabet, TState]):
         return f"<{self.__class__.__name__}:{str(self)}>"
 
 
-class Fragment(Generic[TAlphabet, TState]):
+class Fragment(Generic[A, T]):
     """
     Fragment of a sequence.
 
@@ -47,18 +47,18 @@ class Fragment(Generic[TAlphabet, TState]):
 
     def __init__(
         self,
-        sequence: SequenceABC[TAlphabet],
-        path: Path[Step[TState]],
+        sequence: SequenceABC[A],
+        path: Path[A, T],
     ):
         self._sequence = sequence
         self._path = path
 
     @property
-    def sequence(self) -> SequenceABC[TAlphabet]:
+    def sequence(self) -> SequenceABC[A]:
         return self._sequence
 
     @property
-    def path(self) -> Path[Step[TState]]:
+    def path(self) -> Path[A, T]:
         return self._path
 
     def __iter__(self) -> Iterator[FragStep]:

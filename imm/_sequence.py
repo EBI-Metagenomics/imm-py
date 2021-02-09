@@ -18,6 +18,10 @@ class SequenceABC(Generic[T], ABC):
     Sequence of symbols.
     """
 
+    @property
+    def imm_seq(_) -> CData:
+        raise NotImplementedError()
+
     @abstractmethod
     def __len__(_) -> int:
         raise NotImplementedError()

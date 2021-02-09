@@ -2,20 +2,23 @@ from __future__ import annotations
 
 from typing import Dict, Generic, Optional, Type, TypeVar
 
+from returns.primitives.hkt import Kind1, kinded
+
 from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._lprob import lprob_is_valid, lprob_is_zero, lprob_zero
 from ._path import Path
-from ._sequence import Sequence
+from ._sequence import SequenceABC
 from ._state import State
 
 __all__ = ["HMM"]
 
+A = TypeVar("A", bound=Alphabet)
 T = TypeVar("T", bound=State)
 
 
-class HMM(Generic[T]):
+class HMM(Generic[A, T]):
     """
     Hidden Markov model.
 
@@ -32,20 +35,20 @@ class HMM(Generic[T]):
     def __init__(
         self,
         imm_hmm: CData,
-        alphabet: Alphabet,
-        states: Optional[Dict[CData, T]] = None,
+        alphabet: A,
+        states: Optional[Dict[CData, Kind1[T, A]]] = None,
     ):
         if imm_hmm == ffi.NULL:
             raise RuntimeError("`imm_hmm` is NULL.")
         self._alphabet = alphabet
         if states is None:
-            self._states: Dict[CData, T] = {}
+            self._states: Dict[CData, Kind1[T, A]] = {}
         else:
             self._states = states
         self._imm_hmm = imm_hmm
 
     @classmethod
-    def create(cls: Type[HMM], alphabet: Alphabet) -> HMM:
+    def create(cls: Type[HMM[A, T]], alphabet: A) -> HMM[A, T]:
         """
         Create HMM.
 
@@ -61,20 +64,21 @@ class HMM(Generic[T]):
     def imm_hmm(self) -> CData:
         return self._imm_hmm
 
-    def find_state(self, name: bytes) -> T:
+    @kinded
+    def find_state(self, name: bytes) -> Kind1[T, A]:
         for state in self._states.values():
             if state.name == name:
                 return state
         raise ValueError("Could not find state by name.")
 
-    def states(self) -> Dict[CData, T]:
+    def states(self) -> Dict[CData, Kind1[T, A]]:
         return self._states
 
-    def set_start_lprob(self, state: T, lprob: float):
+    def set_start_lprob(self, state: Kind1[T, A], lprob: float):
         if lib.imm_hmm_set_start(self._imm_hmm, state.imm_state, lprob) != 0:
             raise RuntimeError("Could not set start probability.")
 
-    def transition(self, a: T, b: T):
+    def transition(self, a: Kind1[T, A], b: Kind1[T, A]) -> float:
         """
         Parameters
         ----------
@@ -88,7 +92,7 @@ class HMM(Generic[T]):
             raise RuntimeError("Could not retrieve transition probability.")
         return lprob
 
-    def set_transition(self, a: T, b: T, lprob: float):
+    def set_transition(self, a: Kind1[T, A], b: Kind1[T, A], lprob: float):
         """
         Parameters
         ----------
@@ -109,7 +113,7 @@ class HMM(Generic[T]):
         if err != 0:
             raise RuntimeError("Could not set transition probability.")
 
-    def get_transition(self, a: T, b: T) -> float:
+    def get_transition(self, a: Kind1[T, A], b: Kind1[T, A]) -> float:
         """
         Parameters
         ----------
@@ -139,7 +143,7 @@ class HMM(Generic[T]):
     def alphabet(self) -> Alphabet:
         return self._alphabet
 
-    def add_state(self, state: T, start_lprob: float = lprob_zero()):
+    def add_state(self, state: Kind1[T, A], start_lprob: float = lprob_zero()):
         """
         Parameters
         ----------
@@ -152,7 +156,7 @@ class HMM(Generic[T]):
             raise ValueError(f"Could not add state {str(state.name)}.")
         self._states[state.imm_state] = state
 
-    def del_state(self, state: T):
+    def del_state(self, state: Kind1[T, A]):
         if state.imm_state not in self._states:
             raise ValueError(f"State {state} not found.")
 
@@ -166,12 +170,12 @@ class HMM(Generic[T]):
         if lib.imm_hmm_normalize(self._imm_hmm) != 0:
             raise ValueError("Normalization error.")
 
-    def normalize_transitions(self, state: T):
+    def normalize_transitions(self, state: Kind1[T, A]):
         err: int = lib.imm_hmm_normalize_trans(self._imm_hmm, state.imm_state)
         if err != 0:
             raise ValueError("Normalization error.")
 
-    def loglikelihood(self, seq: Sequence, path: Path) -> float:
+    def loglikelihood(self, seq: SequenceABC[A], path: Path[A, T]) -> float:
         lprob: float = lib.imm_hmm_loglikelihood(
             self._imm_hmm, seq.imm_seq, path.imm_path
         )
@@ -179,7 +183,7 @@ class HMM(Generic[T]):
             raise ValueError("Could not calculate the loglikelihood.")
         return lprob
 
-    def create_dp(self, end_state: T):
+    def create_dp(self, end_state: Kind1[T, A]):
         from ._dp import DP
 
         imm_state = end_state.imm_state

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Generic, Optional, Type, TypeVar
 
+from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._sequence import Sequence
@@ -13,10 +14,11 @@ if TYPE_CHECKING:
 
 __all__ = ["DPTask"]
 
+A = TypeVar("A", bound=Alphabet)
 T = TypeVar("T", bound=State)
 
 
-class DPTask(Generic[T]):
+class DPTask(Generic[A, T]):
     """
     DP task.
 
@@ -27,13 +29,13 @@ class DPTask(Generic[T]):
     """
 
     def __init__(self, imm_dp_task: CData):
-        self._sequence: Optional[Sequence] = None
+        self._sequence: Optional[Sequence[A]] = None
         if imm_dp_task == ffi.NULL:
             raise RuntimeError("`imm_dp_task` is NULL.")
         self._imm_dp_task = imm_dp_task
 
     @classmethod
-    def create(cls: Type[DPTask], dp: DP[T]) -> DPTask[T]:
+    def create(cls: Type[DPTask[A, T]], dp: DP[A, T]) -> DPTask[A, T]:
         """
         Create an DP task.
 
@@ -44,12 +46,12 @@ class DPTask(Generic[T]):
         """
         return cls(lib.imm_dp_task_create(dp.imm_dp))
 
-    def setup(self, seq: Sequence, window_length: int = 0):
+    def setup(self, seq: Sequence[A], window_length: int = 0):
         self._sequence = seq
         return lib.imm_dp_task_setup(self._imm_dp_task, seq.imm_seq, window_length)
 
     @property
-    def sequence(self) -> Sequence:
+    def sequence(self) -> Sequence[A]:
         if self._sequence is None:
             raise RuntimeError("Sequence is None.")
         return self._sequence

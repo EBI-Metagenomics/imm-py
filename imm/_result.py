@@ -1,18 +1,19 @@
 from typing import Generic, TypeVar
 
+from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._path import Path
 from ._sequence import SubSequence
 from ._state import State
-from ._step import Step
 
 __all__ = ["Result"]
 
+A = TypeVar("A", bound=Alphabet)
 T = TypeVar("T", bound=State)
 
 
-class Result(Generic[T]):
+class Result(Generic[A, T]):
     """
     Result.
 
@@ -29,8 +30,8 @@ class Result(Generic[T]):
     def __init__(
         self,
         imm_result: CData,
-        path: Path[Step[T]],
-        sequence: SubSequence,
+        path: Path[A, T],
+        sequence: SubSequence[A],
     ):
         if imm_result == ffi.NULL:
             raise RuntimeError("`imm_result` is NULL.")
@@ -39,11 +40,11 @@ class Result(Generic[T]):
         self._sequence = sequence
 
     @property
-    def path(self) -> Path[Step[T]]:
+    def path(self) -> Path[A, T]:
         return self._path
 
     @property
-    def sequence(self) -> SubSequence:
+    def sequence(self) -> SubSequence[A]:
         return self._sequence
 
     def __del__(self):

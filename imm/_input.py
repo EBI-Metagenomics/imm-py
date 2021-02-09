@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Iterator, Type
+from typing import Iterator, Type
 
 from . import wrap
 from ._cdata import CData
@@ -8,7 +8,6 @@ from ._dp import DP
 from ._ffi import ffi, lib
 from ._hmm import HMM
 from ._model import Model
-from ._state import State
 
 __all__ = ["Input"]
 
@@ -41,7 +40,7 @@ class Input:
 
         abc = wrap.imm_abc(lib.imm_model_abc(imm_model))
 
-        states: Dict[CData, State] = {}
+        states = {}
         for i in range(lib.imm_model_nstates(imm_model)):
             imm_state = lib.imm_model_state(imm_model, i)
             states[imm_state] = wrap.imm_state(imm_state, abc)

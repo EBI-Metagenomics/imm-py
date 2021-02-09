@@ -2,16 +2,19 @@ from __future__ import annotations
 
 from typing import Generic, Iterable, Iterator, Type, TypeVar
 
+from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
+from ._state import State
 from ._step import Step
 
 __all__ = ["Path"]
 
-T = TypeVar("T", bound=Step)
+A = TypeVar("A", bound=Alphabet)
+T = TypeVar("T", bound=State)
 
 
-class Path(Generic[T]):
+class Path(Generic[A, T]):
     """
     Path.
 
@@ -23,14 +26,14 @@ class Path(Generic[T]):
         Steps.
     """
 
-    def __init__(self, imm_path: CData, steps: Iterable[T]):
+    def __init__(self, imm_path: CData, steps: Iterable[Step[A, T]]):
         if imm_path == ffi.NULL:
             raise RuntimeError("`imm_path` is NULL.")
         self._imm_path = imm_path
         self._steps = list(steps)
 
     @classmethod
-    def create(cls: Type[Path], steps: Iterable[T]) -> Path:
+    def create(cls: Type[Path[A, T]], steps: Iterable[Step[A, T]]) -> Path[A, T]:
         """
         Create path.
 
@@ -51,10 +54,10 @@ class Path(Generic[T]):
     def __len__(self) -> int:
         return len(self._steps)
 
-    def __getitem__(self, i: int) -> T:
+    def __getitem__(self, i: int) -> Step[A, T]:
         return self._steps[i]
 
-    def __iter__(self) -> Iterator[T]:
+    def __iter__(self) -> Iterator[Step[A, T]]:
         for i in range(len(self)):
             yield self[i]
 

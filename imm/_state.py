@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Generic, Iterable, Type, TypeVar
+from typing import Iterable, Type, TypeVar
+
+from returns.primitives.hkt import SupportsKind1
 
 from ._alphabet import Alphabet
 from ._cdata import CData
@@ -21,7 +23,7 @@ class StateType(Enum):
     TABLE = 0x02
 
 
-class State(Generic[T]):
+class State(SupportsKind1["State", T]):
     def __init__(self, imm_state: CData, alphabet: T):
         """
         State.
@@ -112,7 +114,7 @@ class MuteState(State[T]):
             Alphabet.
         """
         imm_mute_state = lib.imm_mute_state_create(name, alphabet.imm_abc)
-        return MuteState(imm_mute_state, alphabet)
+        return cls(imm_mute_state, alphabet)
 
     def __del__(self):
         if self._imm_mute_state != ffi.NULL:
@@ -156,7 +158,7 @@ class NormalState(State[T]):
             Emission probabilities in log-space for each alphabet letter.
         """
         ptr = lib.imm_normal_state_create(name, alphabet.imm_abc, list(lprobs))
-        return NormalState(ptr, alphabet)
+        return cls(ptr, alphabet)
 
     def __del__(self):
         if self._imm_normal_state != ffi.NULL:
@@ -198,7 +200,7 @@ class TableState(State[T]):
             Table of sequence probabilities.
         """
         ptr = lib.imm_table_state_create(name, sequence_table.imm_seq_table)
-        return TableState(ptr, sequence_table.alphabet)
+        return cls(ptr, sequence_table.alphabet)
 
     def __del__(self):
         if self._imm_table_state != ffi.NULL:

@@ -2,21 +2,26 @@ from __future__ import annotations
 
 from typing import Generic, Type, TypeVar
 
+from returns.primitives.hkt import Kind1
+
+from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._state import State
 
 __all__ = ["Step"]
 
+A = TypeVar("A", bound=Alphabet)
 T = TypeVar("T", bound=State)
 
 
-class Step(Generic[T]):
+class Step(Generic[A, T]):
     """
     Path step.
 
-    A step is composed of a state and an emitted sequence length. The user should not need to
-    directly call the constructor of this class but instead use the methods from the `Path` class.
+    A step is composed of a state and an emitted sequence length. The user
+    should not need to directly call the constructor of this class but instead
+    use the methods from the `Path` class.
 
     Parameters
     ----------
@@ -26,14 +31,14 @@ class Step(Generic[T]):
         State.
     """
 
-    def __init__(self, imm_step: CData, state: T):
+    def __init__(self, imm_step: CData, state: Kind1[T, A]):
         if imm_step == ffi.NULL:
             raise RuntimeError("`imm_step` is NULL.")
         self._imm_step = imm_step
         self._state = state
 
     @classmethod
-    def create(cls: Type[Step], state: T, seq_len: int) -> Step:
+    def create(cls: Type[Step[A, T]], state: Kind1[T, A], seq_len: int) -> Step[A, T]:
         """
         Create a path step.
 
@@ -54,7 +59,7 @@ class Step(Generic[T]):
         return self._imm_step
 
     @property
-    def state(self) -> T:
+    def state(self) -> Kind1[T, A]:
         return self._state
 
     @property

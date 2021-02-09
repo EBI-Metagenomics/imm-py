@@ -1,5 +1,4 @@
 from math import log
-from typing import Union
 
 from imm import Alphabet, Fragment, MuteState, NormalState, Path, Sequence, Step
 
@@ -21,7 +20,7 @@ def test_fragment():
         [Step.create(S, 0), Step.create(M1, 1), Step.create(M2, 1), Step.create(E, 0)]
     )
 
-    fragment = Fragment[Alphabet, Union[MuteState, NormalState]](seq, path)
+    fragment = Fragment(seq, path)
     i = iter(fragment)
 
     frag_step = next(i)

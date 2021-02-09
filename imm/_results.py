@@ -1,5 +1,6 @@
 from typing import Generic, Iterable, TypeVar
 
+from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._result import Result
@@ -8,10 +9,11 @@ from ._state import State
 
 __all__ = ["Results"]
 
+A = TypeVar("A", bound=Alphabet)
 T = TypeVar("T", bound=State)
 
 
-class Results(Generic[T]):
+class Results(Generic[A, T]):
     """
     Results.
 
@@ -28,8 +30,8 @@ class Results(Generic[T]):
     def __init__(
         self,
         imm_results: CData,
-        results: Iterable[Result[T]],
-        sequence: SequenceABC,
+        results: Iterable[Result[A, T]],
+        sequence: SequenceABC[A],
     ):
         if imm_results == ffi.NULL:
             raise RuntimeError("`imm_results` is NULL.")
@@ -40,7 +42,7 @@ class Results(Generic[T]):
     def __len__(self) -> int:
         return len(self._results)
 
-    def __getitem__(self, i) -> Result[T]:
+    def __getitem__(self, i) -> Result[A, T]:
         return self._results[i]
 
     def __iter__(self):
