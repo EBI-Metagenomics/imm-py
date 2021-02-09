@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, Type, TypeVar, Union
+from typing import Generic, Type, TypeVar, Union, overload
 
 from ._alphabet import Alphabet
 from ._cdata import CData
@@ -85,9 +85,21 @@ class Sequence(SequenceABC[T]):
     def __bytes__(self) -> bytes:
         return ffi.string(lib.imm_seq_string(self._imm_seq))
 
-    def __getitem__(self, i: Union[int, slice, Interval]):
+    @overload
+    def __getitem__(self, _: slice) -> SubSequence[T]:
+        ...
+
+    @overload
+    def __getitem__(self, _: Interval) -> SubSequence[T]:
+        ...
+
+    @overload
+    def __getitem__(self, _: int) -> bytes:
+        ...
+
+    def __getitem__(self, i: Union[int, slice, Interval]) -> Union[bytes, SubSequence[T]]:
         if isinstance(i, int):
-            return bytes(self)[i : i + 1]
+            return bytes(self)[i: i + 1]
         if isinstance(i, slice):
             interval = Interval.from_slice(i)
         elif isinstance(i, Interval):
@@ -172,7 +184,7 @@ class SubSequence(SequenceABC[T]):
 
     def __getitem__(self, i: Union[int, slice, Interval]):
         if isinstance(i, int):
-            return bytes(self)[i : i + 1]
+            return bytes(self)[i: i + 1]
         if isinstance(i, slice):
             interval = Interval.from_slice(i)
         elif isinstance(i, Interval):
