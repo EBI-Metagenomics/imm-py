@@ -1,6 +1,6 @@
 from . import testing, wrap
 from ._alphabet import Alphabet
-from ._alphabet_table import AlphabetTable
+from ._alphabet_lprob import AlphabetLprob
 from ._cdata import CData
 from ._dp import DP
 from ._dp_task import DPTask
@@ -42,7 +42,7 @@ __version__ = "0.0.3"
 
 __all__ = [
     "Alphabet",
-    "AlphabetTable",
+    "AlphabetLprob",
     "CData",
     "DP",
     "DPTask",

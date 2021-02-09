@@ -1,5 +1,5 @@
 struct imm_abc;
-struct imm_abc_table;
+struct imm_abc_lprob;
 struct imm_dp;
 struct imm_dp_task;
 struct imm_hmm;
@@ -58,12 +58,12 @@ char const*           imm_abc_symbols(struct imm_abc const* abc);
 uint8_t               imm_abc_type_id(struct imm_abc const* abc);
 int                   imm_abc_write(struct imm_abc const* abc, FILE* stream);
 
-/* Alphabet table */
-struct imm_abc_table const* imm_abc_table_create(struct imm_abc const* abc,
+/* Alphabet lprob */
+struct imm_abc_lprob const* imm_abc_lprob_create(struct imm_abc const* abc,
                                                  imm_float const*      lprobs);
-void                        imm_abc_table_destroy(struct imm_abc_table const* abc_table);
-struct imm_abc const*       imm_abc_table_abc(struct imm_abc_table const* abc_table);
-imm_float                   imm_abc_table_lprob(struct imm_abc_table const* abc_table, char symbol);
+void                        imm_abc_lprob_destroy(struct imm_abc_lprob const* abc_lprob);
+struct imm_abc const*       imm_abc_lprob_abc(struct imm_abc_lprob const* abc_lprob);
+imm_float                   imm_abc_lprob_get(struct imm_abc_lprob const* abc_lprob, char symbol);
 
 /* DP */
 void                      imm_dp_destroy(struct imm_dp const* dp);

@@ -9,30 +9,30 @@ from ._lprob import lprob_is_valid
 from .build_ext import imm_float
 
 
-class AlphabetTable:
+class AlphabetLprob:
     """
-    Alphabet table of probabilities.
+    Alphabet log-probabilities.
 
     Parameters
     ----------
-    imm_abc_table
-        Alphabet table pointer.
+    imm_abc_lprob
+        Alphabet log-probabilities.
     alphabet
         Alphabet.
     """
 
-    def __init__(self, imm_abc_table: CData, alphabet: Alphabet):
-        if imm_abc_table == ffi.NULL:
-            raise RuntimeError("`imm_abc_table` is NULL.")
-        self._imm_abc_table = imm_abc_table
+    def __init__(self, imm_abc_lprob: CData, alphabet: Alphabet):
+        if imm_abc_lprob == ffi.NULL:
+            raise RuntimeError("`imm_abc_lprob` is NULL.")
+        self._imm_abc_lprob = imm_abc_lprob
         self._alphabet = alphabet
 
     @classmethod
     def create(
-        cls: Type[AlphabetTable], alphabet: Alphabet, lprobs: Sequence[float]
-    ) -> AlphabetTable:
+        cls: Type[AlphabetLprob], alphabet: Alphabet, lprobs: Sequence[float]
+    ) -> AlphabetLprob:
         """
-        Create an alphabet table of probabilities.
+        Create an alphabet log-probabilities.
 
         Parameters
         ----------
@@ -41,25 +41,25 @@ class AlphabetTable:
         lprobs
             Log probability of each nucleotide.
         """
-        imm_abc_table = lib.imm_abc_table_create(
+        imm_abc_lprob = lib.imm_abc_lprob_create(
             alphabet.imm_abc, ffi.new(f"{imm_float}[]", lprobs)
         )
-        return cls(imm_abc_table, alphabet)
+        return cls(imm_abc_lprob, alphabet)
 
     @property
     def alphabet(self) -> Alphabet:
         return self._alphabet
 
     @property
-    def imm_abc_table(self) -> CData:
-        return self._imm_abc_table
+    def imm_abc_lprob(self) -> CData:
+        return self._imm_abc_lprob
 
     def lprob(self, symbol: bytes) -> float:
-        lprob: float = lib.imm_abc_table_lprob(self._imm_abc_table, symbol)
+        lprob: float = lib.imm_abc_lprob_get(self._imm_abc_lprob, symbol)
         if not lprob_is_valid(lprob):
             raise RuntimeError("Could not get probability.")
         return lprob
 
     def __del__(self):
-        if self._imm_abc_table != ffi.NULL:
-            lib.imm_abc_table_destroy(self._imm_abc_table)
+        if self._imm_abc_lprob != ffi.NULL:
+            lib.imm_abc_lprob_destroy(self._imm_abc_lprob)
