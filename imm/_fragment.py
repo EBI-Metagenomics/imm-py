@@ -1,5 +1,6 @@
-from typing import Generic, Iterator, TypeVar
+from typing import Iterator, TypeVar
 
+from returns.primitives.hkt import SupportsKind2
 from ._alphabet import Alphabet
 from ._interval import Interval
 from ._path import Path
@@ -13,7 +14,7 @@ A = TypeVar("A", bound=Alphabet)
 T = TypeVar("T", bound=State)
 
 
-class FragStep(Generic[A, T]):
+class FragStep(SupportsKind2["FragStep", A, T]):
     def __init__(self, sequence: SequenceABC[A], step: Step[A, T]):
         self._sequence = sequence
         self._step = step
@@ -33,7 +34,7 @@ class FragStep(Generic[A, T]):
         return f"<{self.__class__.__name__}:{str(self)}>"
 
 
-class Fragment(Generic[A, T]):
+class Fragment(SupportsKind2["Fragment", A, T]):
     """
     Fragment of a sequence.
 

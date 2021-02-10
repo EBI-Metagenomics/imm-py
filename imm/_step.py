@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import Generic, Type, TypeVar
+from typing import Type, TypeVar
 
 from returns.primitives.hkt import Kind1
+from returns.primitives.hkt import SupportsKind2
 
 from ._alphabet import Alphabet
 from ._cdata import CData
@@ -15,7 +16,7 @@ A = TypeVar("A", bound=Alphabet)
 T = TypeVar("T", bound=State)
 
 
-class Step(Generic[A, T]):
+class Step(SupportsKind2["Step", A, T]):
     """
     Path step.
 

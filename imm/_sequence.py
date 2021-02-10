@@ -30,6 +30,21 @@ class SequenceABC(Generic[T], ABC):
     def __bytes__(_) -> bytes:
         raise NotImplementedError()
 
+    @overload
+    @abstractmethod
+    def __getitem__(self, _: slice) -> SubSequence[T]:
+        ...
+
+    @overload
+    @abstractmethod
+    def __getitem__(self, _: Interval) -> SubSequence[T]:
+        ...
+
+    @overload
+    @abstractmethod
+    def __getitem__(self, _: int) -> bytes:
+        ...
+
     @abstractmethod
     def __getitem__(_, i: Union[int, slice, Interval]):
         del i
