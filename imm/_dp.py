@@ -1,22 +1,15 @@
-from typing import Generic, TypeVar
-
 from . import wrap
-from ._alphabet import Alphabet
 from ._cdata import CData
 from ._dp_task import DPTask
 from ._ffi import ffi, lib
 from ._hmm import HMM
 from ._results import Results
-from ._state import State
 
 __all__ = ["DP"]
 
-A = TypeVar("A", bound=Alphabet)
-T = TypeVar("T", bound=State)
 
-
-class DP(Generic[A, T]):
-    def __init__(self, imm_dp: CData, hmm: HMM[A, T]):
+class DP:
+    def __init__(self, imm_dp: CData, hmm: HMM):
         if imm_dp == ffi.NULL:
             raise RuntimeError("`imm_dp` is NULL.")
         self._imm_dp = imm_dp
@@ -26,7 +19,7 @@ class DP(Generic[A, T]):
     def imm_dp(self) -> CData:
         return self._imm_dp
 
-    def viterbi(self, task: DPTask[A, T]) -> Results[A, T]:
+    def viterbi(self, task: DPTask) -> Results:
         imm_results = lib.imm_dp_viterbi(self._imm_dp, task.imm_dp_task)
         if imm_results == ffi.NULL:
             raise RuntimeError("Could not run viterbi.")

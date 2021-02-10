@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, Type, TypeVar, Union, overload
+from typing import Type, Union, overload
 
 from ._alphabet import Alphabet
 from ._cdata import CData
@@ -10,10 +10,8 @@ from ._interval import Interval
 
 __all__ = ["Sequence", "SequenceABC", "SubSequence"]
 
-T = TypeVar("T", bound=Alphabet)
 
-
-class SequenceABC(Generic[T], ABC):
+class SequenceABC(ABC):
     """
     Sequence of symbols.
     """
@@ -32,12 +30,12 @@ class SequenceABC(Generic[T], ABC):
 
     @overload
     @abstractmethod
-    def __getitem__(self, _: slice) -> SubSequence[T]:
+    def __getitem__(self, _: slice) -> SubSequence:
         ...
 
     @overload
     @abstractmethod
-    def __getitem__(self, _: Interval) -> SubSequence[T]:
+    def __getitem__(self, _: Interval) -> SubSequence:
         ...
 
     @overload
@@ -52,11 +50,11 @@ class SequenceABC(Generic[T], ABC):
 
     @property
     @abstractmethod
-    def alphabet(_) -> T:
+    def alphabet(_) -> Alphabet:
         raise NotImplementedError()
 
 
-class Sequence(SequenceABC[T]):
+class Sequence(SequenceABC):
     """
     Sequence of symbols from a given alphabet.
 
@@ -68,7 +66,7 @@ class Sequence(SequenceABC[T]):
         Alphabet.
     """
 
-    def __init__(self, imm_seq: CData, alphabet: T):
+    def __init__(self, imm_seq: CData, alphabet: Alphabet):
         super().__init__()
         self._imm_seq = ffi.NULL
         if imm_seq == ffi.NULL:
@@ -77,7 +75,7 @@ class Sequence(SequenceABC[T]):
         self._alphabet = alphabet
 
     @classmethod
-    def create(cls: Type[Sequence[T]], sequence: bytes, alphabet: T) -> Sequence[T]:
+    def create(cls: Type[Sequence], sequence: bytes, alphabet: Alphabet) -> Sequence:
         """
         Create a sequence of symbols.
 
@@ -101,20 +99,20 @@ class Sequence(SequenceABC[T]):
         return ffi.string(lib.imm_seq_string(self._imm_seq))
 
     @overload
-    def __getitem__(self, _: slice) -> SubSequence[T]:
+    def __getitem__(self, _: slice) -> SubSequence:
         ...
 
     @overload
-    def __getitem__(self, _: Interval) -> SubSequence[T]:
+    def __getitem__(self, _: Interval) -> SubSequence:
         ...
 
     @overload
     def __getitem__(self, _: int) -> bytes:
         ...
 
-    def __getitem__(self, i: Union[int, slice, Interval]) -> Union[bytes, SubSequence[T]]:
+    def __getitem__(self, i: Union[int, slice, Interval]) -> Union[bytes, SubSequence]:
         if isinstance(i, int):
-            return bytes(self)[i: i + 1]
+            return bytes(self)[i : i + 1]
         if isinstance(i, slice):
             interval = Interval.from_slice(i)
         elif isinstance(i, Interval):
@@ -122,10 +120,10 @@ class Sequence(SequenceABC[T]):
         else:
             raise RuntimeError("Index has to be an integer of a slice.")
 
-        return SubSequence[T].create(self, interval)
+        return SubSequence.create(self, interval)
 
     @property
-    def alphabet(self) -> T:
+    def alphabet(self) -> Alphabet:
         return self._alphabet
 
     def __del__(self):
@@ -139,7 +137,7 @@ class Sequence(SequenceABC[T]):
         return f"<{self.__class__.__name__}:{str(self)}>"
 
 
-class SubSequence(SequenceABC[T]):
+class SubSequence(SequenceABC):
     """
     Subsequence of symbols of a given sequence.
 
@@ -151,7 +149,7 @@ class SubSequence(SequenceABC[T]):
         Sequence.
     """
 
-    def __init__(self, imm_subseq: CData, sequence: Sequence[T]):
+    def __init__(self, imm_subseq: CData, sequence: Sequence):
         if ffi.getctype(ffi.typeof(imm_subseq)) != "struct imm_subseq":
             raise TypeError("Wrong `imm_subseq` type.")
         self._imm_subseq = imm_subseq
@@ -159,8 +157,8 @@ class SubSequence(SequenceABC[T]):
 
     @classmethod
     def create(
-        cls: Type[SubSequence[T]], sequence: Sequence[T], interval: Interval
-    ) -> SubSequence[T]:
+        cls: Type[SubSequence], sequence: Sequence, interval: Interval
+    ) -> SubSequence:
         """
         Subsequence of symbols of a given sequence.
 
@@ -199,7 +197,7 @@ class SubSequence(SequenceABC[T]):
 
     def __getitem__(self, i: Union[int, slice, Interval]):
         if isinstance(i, int):
-            return bytes(self)[i: i + 1]
+            return bytes(self)[i : i + 1]
         if isinstance(i, slice):
             interval = Interval.from_slice(i)
         elif isinstance(i, Interval):
@@ -209,10 +207,10 @@ class SubSequence(SequenceABC[T]):
 
         start = interval.start + self.start
         length = interval.stop - interval.start
-        return SubSequence[T].create(self._sequence, Interval(start, start + length))
+        return SubSequence.create(self._sequence, Interval(start, start + length))
 
     @property
-    def alphabet(self) -> T:
+    def alphabet(self) -> Alphabet:
         return self._sequence.alphabet
 
     def __str__(self) -> str:

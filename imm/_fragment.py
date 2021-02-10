@@ -1,30 +1,22 @@
-from typing import Iterator, TypeVar
-
-from returns.primitives.hkt import SupportsKind2
-from ._alphabet import Alphabet
 from ._interval import Interval
 from ._path import Path
 from ._sequence import SequenceABC
-from ._state import State
 from ._step import Step
 
 __all__ = ["FragStep", "Fragment"]
 
-A = TypeVar("A", bound=Alphabet)
-T = TypeVar("T", bound=State)
 
-
-class FragStep(SupportsKind2["FragStep", A, T]):
-    def __init__(self, sequence: SequenceABC[A], step: Step[A, T]):
+class FragStep:
+    def __init__(self, sequence: SequenceABC, step: Step):
         self._sequence = sequence
         self._step = step
 
     @property
-    def sequence(self) -> SequenceABC[A]:
+    def sequence(self) -> SequenceABC:
         return self._sequence
 
     @property
-    def step(self) -> Step[A, T]:
+    def step(self) -> Step:
         return self._step
 
     def __str__(self) -> str:
@@ -34,7 +26,7 @@ class FragStep(SupportsKind2["FragStep", A, T]):
         return f"<{self.__class__.__name__}:{str(self)}>"
 
 
-class Fragment(SupportsKind2["Fragment", A, T]):
+class Fragment:
     """
     Fragment of a sequence.
 
@@ -48,21 +40,21 @@ class Fragment(SupportsKind2["Fragment", A, T]):
 
     def __init__(
         self,
-        sequence: SequenceABC[A],
-        path: Path[A, T],
+        sequence: SequenceABC,
+        path: Path,
     ):
         self._sequence = sequence
         self._path = path
 
     @property
-    def sequence(self) -> SequenceABC[A]:
+    def sequence(self) -> SequenceABC:
         return self._sequence
 
     @property
-    def path(self) -> Path[A, T]:
+    def path(self) -> Path:
         return self._path
 
-    def __iter__(self) -> Iterator[FragStep]:
+    def __iter__(self):
         start = end = 0
         for step in self._path:
             end += step.seq_len

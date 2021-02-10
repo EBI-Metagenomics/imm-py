@@ -1,22 +1,15 @@
 from __future__ import annotations
 
-from typing import Type, TypeVar
+from typing import Type
 
-from returns.primitives.hkt import Kind1
-from returns.primitives.hkt import SupportsKind2
-
-from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._state import State
 
 __all__ = ["Step"]
 
-A = TypeVar("A", bound=Alphabet)
-T = TypeVar("T", bound=State)
 
-
-class Step(SupportsKind2["Step", A, T]):
+class Step:
     """
     Path step.
 
@@ -32,14 +25,14 @@ class Step(SupportsKind2["Step", A, T]):
         State.
     """
 
-    def __init__(self, imm_step: CData, state: Kind1[T, A]):
+    def __init__(self, imm_step: CData, state: State):
         if imm_step == ffi.NULL:
             raise RuntimeError("`imm_step` is NULL.")
         self._imm_step = imm_step
         self._state = state
 
     @classmethod
-    def create(cls: Type[Step[A, T]], state: Kind1[T, A], seq_len: int) -> Step[A, T]:
+    def create(cls: Type[Step], state: State, seq_len: int) -> Step:
         """
         Create a path step.
 
@@ -60,7 +53,7 @@ class Step(SupportsKind2["Step", A, T]):
         return self._imm_step
 
     @property
-    def state(self) -> Kind1[T, A]:
+    def state(self) -> State:
         return self._state
 
     @property

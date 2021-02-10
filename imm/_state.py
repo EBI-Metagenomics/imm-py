@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Iterable, Type, TypeVar
-
-from returns.primitives.hkt import SupportsKind1
+from typing import Iterable, Type
 
 from ._alphabet import Alphabet
 from ._cdata import CData
@@ -14,8 +12,6 @@ from ._sequence_table import SequenceTable
 
 __all__ = ["State", "StateType", "NormalState", "MuteState", "TableState"]
 
-T = TypeVar("T", bound=Alphabet)
-
 
 class StateType(Enum):
     MUTE = 0x00
@@ -23,8 +19,8 @@ class StateType(Enum):
     TABLE = 0x02
 
 
-class State(SupportsKind1["State", T]):
-    def __init__(self, imm_state: CData, alphabet: T):
+class State:
+    def __init__(self, imm_state: CData, alphabet: Alphabet):
         """
         State.
 
@@ -41,7 +37,7 @@ class State(SupportsKind1["State", T]):
         self._alphabet = alphabet
 
     @property
-    def alphabet(self) -> T:
+    def alphabet(self) -> Alphabet:
         return self._alphabet
 
     @property
@@ -84,8 +80,8 @@ class State(SupportsKind1["State", T]):
         return f"<{self.__class__.__name__}:{str(self)}>"
 
 
-class MuteState(State[T]):
-    def __init__(self, imm_mute_state: CData, alphabet: T):
+class MuteState(State):
+    def __init__(self, imm_mute_state: CData, alphabet: Alphabet):
         """
         Mute state.
 
@@ -102,7 +98,7 @@ class MuteState(State[T]):
         super().__init__(lib.imm_mute_state_super(self._imm_mute_state), alphabet)
 
     @classmethod
-    def create(cls: Type[MuteState[T]], name: bytes, alphabet: T) -> MuteState[T]:
+    def create(cls: Type[MuteState], name: bytes, alphabet: Alphabet) -> MuteState:
         """
         Mute state.
 
@@ -124,8 +120,8 @@ class MuteState(State[T]):
         return f"<{self.__class__.__name__}:{str(self)}>"
 
 
-class NormalState(State[T]):
-    def __init__(self, imm_normal_state: CData, alphabet: T):
+class NormalState(State):
+    def __init__(self, imm_normal_state: CData, alphabet: Alphabet):
         """
         Normal state.
 
@@ -143,8 +139,8 @@ class NormalState(State[T]):
 
     @classmethod
     def create(
-        cls: Type[NormalState[T]], name: bytes, alphabet: T, lprobs: Iterable[float]
-    ) -> NormalState[T]:
+        cls: Type[NormalState], name: bytes, alphabet: Alphabet, lprobs: Iterable[float]
+    ) -> NormalState:
         """
         Normal state.
 
@@ -168,8 +164,8 @@ class NormalState(State[T]):
         return f"<{self.__class__.__name__}:{str(self)}>"
 
 
-class TableState(State[T]):
-    def __init__(self, imm_table_state: CData, alphabet: T):
+class TableState(State):
+    def __init__(self, imm_table_state: CData, alphabet: Alphabet):
         """
         Table state.
 
@@ -187,8 +183,8 @@ class TableState(State[T]):
 
     @classmethod
     def create(
-        cls: Type[TableState[T]], name: bytes, sequence_table: SequenceTable
-    ) -> TableState[T]:
+        cls: Type[TableState], name: bytes, sequence_table: SequenceTable
+    ) -> TableState:
         """
         Create table state.
 

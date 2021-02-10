@@ -1,21 +1,15 @@
 from __future__ import annotations
 
-from typing import Iterable, Iterator, Type, TypeVar
-from returns.primitives.hkt import SupportsKind2
+from typing import Iterable, Iterator, Type
 
-from ._alphabet import Alphabet
 from ._cdata import CData
 from ._ffi import ffi, lib
-from ._state import State
 from ._step import Step
 
 __all__ = ["Path"]
 
-A = TypeVar("A", bound=Alphabet)
-T = TypeVar("T", bound=State)
 
-
-class Path(SupportsKind2["Path", A, T]):
+class Path:
     """
     Path.
 
@@ -27,14 +21,14 @@ class Path(SupportsKind2["Path", A, T]):
         Steps.
     """
 
-    def __init__(self, imm_path: CData, steps: Iterable[Step[A, T]]):
+    def __init__(self, imm_path: CData, steps: Iterable[Step]):
         if imm_path == ffi.NULL:
             raise RuntimeError("`imm_path` is NULL.")
         self._imm_path = imm_path
         self._steps = list(steps)
 
     @classmethod
-    def create(cls: Type[Path[A, T]], steps: Iterable[Step[A, T]]) -> Path[A, T]:
+    def create(cls: Type[Path], steps: Iterable[Step]) -> Path:
         """
         Create path.
 
@@ -55,10 +49,10 @@ class Path(SupportsKind2["Path", A, T]):
     def __len__(self) -> int:
         return len(self._steps)
 
-    def __getitem__(self, i: int) -> Step[A, T]:
+    def __getitem__(self, i: int) -> Step:
         return self._steps[i]
 
-    def __iter__(self) -> Iterator[Step[A, T]]:
+    def __iter__(self) -> Iterator[Step]:
         for i in range(len(self)):
             yield self[i]
 
