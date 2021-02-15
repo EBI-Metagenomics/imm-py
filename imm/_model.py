@@ -20,9 +20,7 @@ class Model:
 
     @property
     def alphabet(self) -> Alphabet:
-        if len(self._hmm_blocks) == 0:
-            raise ValueError("Empty model.")
-        return self._hmm_blocks[0].hmm.alphabet
+        return self._alphabet
 
     def append_hmm_block(self, hmm_block: HMMBlock):
         lib.imm_model_append_hmm_block(self._imm_model, hmm_block.imm_hmm_block)
