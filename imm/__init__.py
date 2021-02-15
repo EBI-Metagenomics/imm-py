@@ -6,6 +6,7 @@ from ._dp import DP
 from ._dp_task import DPTask
 from ._fragment import Fragment, FragStep
 from ._hmm import HMM
+from ._hmm_block import HMMBlock
 from ._input import Input
 from ._interval import Interval
 from ._lprob import (
@@ -49,6 +50,7 @@ __all__ = [
     "FragStep",
     "Fragment",
     "HMM",
+    "HMMBlock",
     "Input",
     "Interval",
     "Model",

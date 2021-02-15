@@ -3,6 +3,7 @@ struct imm_abc_lprob;
 struct imm_dp;
 struct imm_dp_task;
 struct imm_hmm;
+struct imm_hmm_block;
 struct imm_input;
 struct imm_model;
 struct imm_mute_state;
@@ -93,6 +94,13 @@ int imm_hmm_set_start(struct imm_hmm* hmm, struct imm_state const* state, imm_fl
 int imm_hmm_set_trans(struct imm_hmm* hmm, struct imm_state const* src_state,
                       struct imm_state const* tgt_state, imm_float lprob);
 
+/* HMM block */
+struct imm_hmm_block*   imm_hmm_block_create(struct imm_hmm* hmm, struct imm_dp const* dp);
+struct imm_dp const*    imm_hmm_block_dp(struct imm_hmm_block const* block);
+struct imm_hmm*         imm_hmm_block_hmm(struct imm_hmm_block const* block);
+uint16_t                imm_hmm_block_nstates(struct imm_hmm_block const* block);
+struct imm_state const* imm_hmm_block_state(struct imm_hmm_block const* block, uint16_t i);
+
 /* Input */
 int                     imm_input_close(struct imm_input* input);
 struct imm_input*       imm_input_create(char const* filepath);
@@ -101,14 +109,14 @@ bool                    imm_input_eof(struct imm_input const* input);
 struct imm_model const* imm_input_read(struct imm_input* input);
 
 /* Model */
-struct imm_abc const*   imm_model_abc(struct imm_model const* model);
-struct imm_model*       imm_model_create(struct imm_hmm* hmm, struct imm_dp const* dp);
-void                    imm_model_destroy(struct imm_model const* model);
-struct imm_dp const*    imm_model_dp(struct imm_model const* model);
-struct imm_hmm*         imm_model_hmm(struct imm_model const* model);
-uint16_t                imm_model_nstates(struct imm_model const* model);
+struct imm_abc const* imm_model_abc(struct imm_model const* model);
+void              imm_model_append_hmm_block(struct imm_model* model, struct imm_hmm_block* block);
+struct imm_model* imm_model_create(struct imm_abc const* abc);
+void              imm_model_destroy(struct imm_model const* model);
+void              imm_model_free(struct imm_model const* model);
+struct imm_hmm_block*   imm_model_get_hmm_block(struct imm_model const* model, uint8_t i);
+uint8_t                 imm_model_nhmm_blocks(struct imm_model const* model);
 struct imm_model const* imm_model_read(FILE* stream);
-struct imm_state const* imm_model_state(struct imm_model const* model, uint16_t i);
 int                     imm_model_write(struct imm_model const* model, FILE* stream);
 
 /* Mute state */

@@ -7,6 +7,7 @@ from ._cdata import CData
 from ._dp import DP
 from ._ffi import ffi, lib
 from ._hmm import HMM
+from ._hmm_block import HMMBlock
 from ._model import Model
 
 __all__ = ["Input"]
@@ -40,14 +41,19 @@ class Input:
 
         abc = wrap.imm_abc(lib.imm_model_abc(imm_model))
 
-        states = {}
-        for i in range(lib.imm_model_nstates(imm_model)):
-            imm_state = lib.imm_model_state(imm_model, i)
-            states[imm_state] = wrap.imm_state(imm_state, abc)
+        model = Model(imm_model, abc)
+        for i in range(lib.imm_model_nhmm_blocks(imm_model)):
+            imm_hmm_block = lib.imm_model_get_hmm_block(imm_model, i)
+            states = {}
+            for j in range(lib.imm_hmm_block_nstates(imm_hmm_block)):
+                imm_state = lib.imm_hmm_block_state(imm_hmm_block, j)
+                states[imm_state] = wrap.imm_state(imm_state, abc)
 
-        hmm = HMM(lib.imm_model_hmm(imm_model), abc, states)
-        dp = DP(lib.imm_model_dp(imm_model), hmm)
-        return Model(imm_model, hmm, dp)
+            hmm = HMM(lib.imm_hmm_block_hmm(imm_hmm_block), abc, states)
+            dp = DP(lib.imm_hmm_block_dp(imm_hmm_block), hmm)
+            hmm_block = HMMBlock(imm_hmm_block, hmm, dp)
+            model.append_hmm_block(hmm_block)
+        return model
 
     def close(self):
         err: int = lib.imm_input_close(self._imm_input)
