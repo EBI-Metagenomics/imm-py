@@ -1,7 +1,7 @@
 from ._cdata import CData
 from ._ffi import ffi, lib
 from ._path import Path
-from ._sequence import SubSequence
+from ._sequence import Sequence
 
 __all__ = ["Result"]
 
@@ -24,8 +24,9 @@ class Result:
         self,
         imm_result: CData,
         path: Path,
-        sequence: SubSequence,
+        sequence: Sequence,
     ):
+        self._imm_result = ffi.NULL
         if imm_result == ffi.NULL:
             raise RuntimeError("`imm_result` is NULL.")
         self._imm_result = imm_result
@@ -37,7 +38,7 @@ class Result:
         return self._path
 
     @property
-    def sequence(self) -> SubSequence:
+    def sequence(self) -> Sequence:
         return self._sequence
 
     def __del__(self):

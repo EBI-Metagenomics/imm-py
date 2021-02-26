@@ -7,8 +7,8 @@ from ._cdata import CData
 from ._dp import DP
 from ._ffi import ffi, lib
 from ._hmm import HMM
-from ._hmm_block import HMMBlock
 from ._model import Model
+from ._profile import Profile
 
 __all__ = ["Input"]
 
@@ -32,28 +32,28 @@ class Input:
     def create(cls: Type[Input], filepath: bytes) -> Input:
         return cls(lib.imm_input_create(filepath))
 
-    def read(self) -> Model:
-        imm_model = lib.imm_input_read(self._imm_input)
-        if imm_model == ffi.NULL:
+    def read(self) -> Profile:
+        imm_profile = lib.imm_input_read(self._imm_input)
+        if imm_profile == ffi.NULL:
             if lib.imm_input_eof(self._imm_input):
                 raise StopIteration
-            raise RuntimeError("Could not read model.")
+            raise RuntimeError("Could not read profile.")
 
-        abc = wrap.imm_abc(lib.imm_model_abc(imm_model))
+        abc = wrap.imm_abc(lib.imm_profile_abc(imm_profile))
 
-        model = Model(imm_model, abc)
-        for i in range(lib.imm_model_nhmm_blocks(imm_model)):
-            imm_hmm_block = lib.imm_model_get_hmm_block(imm_model, i)
+        prof = Profile(imm_profile, abc)
+        for i in range(lib.imm_profile_nmodels(imm_profile)):
+            imm_model = lib.imm_profile_get_model(imm_profile, i)
             states = {}
-            for j in range(lib.imm_hmm_block_nstates(imm_hmm_block)):
-                imm_state = lib.imm_hmm_block_state(imm_hmm_block, j)
+            for j in range(lib.imm_model_nstates(imm_model)):
+                imm_state = lib.imm_model_state(imm_model, j)
                 states[imm_state] = wrap.imm_state(imm_state, abc)
 
-            hmm = HMM(lib.imm_hmm_block_hmm(imm_hmm_block), abc, states)
-            dp = DP(lib.imm_hmm_block_dp(imm_hmm_block), hmm)
-            hmm_block = HMMBlock(imm_hmm_block, hmm, dp)
-            model.append_hmm_block(hmm_block)
-        return model
+            hmm = HMM(lib.imm_model_hmm(imm_model), abc, states)
+            dp = DP(lib.imm_model_dp(imm_model), hmm)
+            hmm_block = Model(imm_model, hmm, dp)
+            prof.append_model(hmm_block)
+        return prof
 
     def close(self):
         err: int = lib.imm_input_close(self._imm_input)
@@ -64,7 +64,7 @@ class Input:
         if self._imm_input != ffi.NULL:
             lib.imm_input_destroy(self._imm_input)
 
-    def __iter__(self) -> Iterator[Model]:
+    def __iter__(self) -> Iterator[Profile]:
         while True:
             try:
                 yield self.read()

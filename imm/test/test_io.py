@@ -12,9 +12,9 @@ from imm import (
     MuteState,
     NormalState,
     Output,
+    Profile,
     Sequence,
     lprob_zero,
-    HMMBlock,
 )
 from imm.testing import assert_allclose
 
@@ -55,31 +55,31 @@ def test_io(tmpdir, imm_example):
 
     dp_task = DPTask.create(dp)
     dp_task.setup(Sequence.create(b"AC", alphabet))
-    r = dp.viterbi(dp_task)[0]
+    r = dp.viterbi(dp_task)
     assert_allclose(hmm.loglikelihood(r.sequence, r.path), log(0.48))
 
-    filepath = Path(tmpdir / "model.imm")
+    filepath = Path(tmpdir / "tmp.imm")
     with Output.create(bytes(filepath)) as output:
-        model = Model.create(alphabet)
-        model.append_hmm_block(HMMBlock.create(hmm, dp))
-        output.write(model)
+        prof = Profile.create(alphabet)
+        prof.append_model(Model.create(hmm, dp))
+        output.write(prof)
 
-        model = Model.create(alphabet)
-        model.append_hmm_block(HMMBlock.create(hmm, dp))
-        output.write(model)
+        prof = Profile.create(alphabet)
+        prof.append_model(Model.create(hmm, dp))
+        output.write(prof)
 
-        model = Model.create(alphabet)
-        model.append_hmm_block(HMMBlock.create(hmm, dp))
-        output.write(model)
+        prof = Profile.create(alphabet)
+        prof.append_model(Model.create(hmm, dp))
+        output.write(prof)
 
     input = Input.create(bytes(filepath))
     nmodels = 0
-    for model in input:
-        hmm_block = model.hmm_blocks[0]
-        dp_task = DPTask.create(hmm_block.dp)
-        dp_task.setup(Sequence.create(b"AC", hmm_block.hmm.alphabet))
-        r = hmm_block.dp.viterbi(dp_task)[0]
-        hmm = hmm_block.hmm
+    for prof in input:
+        model = prof.models[0]
+        dp_task = DPTask.create(model.dp)
+        dp_task.setup(Sequence.create(b"AC", model.hmm.alphabet))
+        r = model.dp.viterbi(dp_task)
+        hmm = model.hmm
         assert_allclose(hmm.loglikelihood(r.sequence, r.path), log(0.48))
         nmodels += 1
     input.close()
@@ -87,12 +87,12 @@ def test_io(tmpdir, imm_example):
 
     with Input.create(bytes(filepath)) as input:
         nmodels = 0
-        for model in input:
-            hmm_block = model.hmm_blocks[0]
-            dp_task = DPTask.create(hmm_block.dp)
-            dp_task.setup(Sequence.create(b"AC", hmm_block.hmm.alphabet))
-            r = hmm_block.dp.viterbi(dp_task)[0]
-            hmm = hmm_block.hmm
+        for prof in input:
+            model = prof.models[0]
+            dp_task = DPTask.create(model.dp)
+            dp_task.setup(Sequence.create(b"AC", model.hmm.alphabet))
+            r = model.dp.viterbi(dp_task)
+            hmm = model.hmm
             assert_allclose(hmm.loglikelihood(r.sequence, r.path), log(0.48))
             nmodels += 1
         assert nmodels == 3

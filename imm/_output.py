@@ -4,7 +4,7 @@ from typing import Type
 
 from ._cdata import CData
 from ._ffi import ffi, lib
-from ._model import Model
+from ._profile import Profile
 
 __all__ = ["Output"]
 
@@ -28,10 +28,10 @@ class Output:
     def create(cls: Type[Output], filepath: bytes) -> Output:
         return cls(lib.imm_output_create(filepath))
 
-    def write(self, model: Model):
-        err: int = lib.imm_output_write(self._imm_output, model.imm_model)
+    def write(self, profile: Profile):
+        err: int = lib.imm_output_write(self._imm_output, profile.imm_profile)
         if err != 0:
-            raise RuntimeError("Could not write model.")
+            raise RuntimeError("Could not write profile.")
 
     def close(self):
         err: int = lib.imm_output_close(self._imm_output)

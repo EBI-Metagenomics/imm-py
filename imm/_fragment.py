@@ -1,18 +1,18 @@
 from ._interval import Interval
 from ._path import Path
-from ._sequence import SequenceABC
+from ._sequence import Sequence
 from ._step import Step
 
 __all__ = ["FragStep", "Fragment"]
 
 
 class FragStep:
-    def __init__(self, sequence: SequenceABC, step: Step):
+    def __init__(self, sequence: Sequence, step: Step):
         self._sequence = sequence
         self._step = step
 
     @property
-    def sequence(self) -> SequenceABC:
+    def sequence(self) -> Sequence:
         return self._sequence
 
     @property
@@ -40,14 +40,14 @@ class Fragment:
 
     def __init__(
         self,
-        sequence: SequenceABC,
+        sequence: Sequence,
         path: Path,
     ):
         self._sequence = sequence
         self._path = path
 
     @property
-    def sequence(self) -> SequenceABC:
+    def sequence(self) -> Sequence:
         return self._sequence
 
     @property

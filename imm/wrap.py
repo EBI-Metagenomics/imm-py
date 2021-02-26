@@ -5,14 +5,14 @@ from typing import List, Mapping
 from ._alphabet import Alphabet, AlphabetType
 from ._cdata import CData
 from ._ffi import ffi, lib
+from ._interval import Interval
 from ._path import Path
 from ._result import Result
-from ._results import Results
-from ._sequence import Sequence, SubSequence
+from ._sequence import Sequence
 from ._state import MuteState, NormalState, State, StateType, TableState
 from ._step import Step
 
-__all__ = ["imm_abc", "imm_path", "imm_result", "imm_results", "imm_state"]
+__all__ = ["imm_abc", "imm_path", "imm_result", "imm_state"]
 
 
 def imm_abc(ptr: CData):
@@ -35,15 +35,7 @@ def imm_path(ptr: CData, states: Mapping[CData, State]) -> Path:
 
 def imm_result(imm_result: CData, sequence: Sequence, states: Mapping[CData, State]):
     path = imm_path(lib.imm_result_path(imm_result), states)
-    imm_subseq = lib.imm_result_subseq(imm_result)
-    return Result(imm_result, path, SubSequence(imm_subseq, sequence))
-
-
-def imm_results(ptr: CData, sequence: Sequence, states: Mapping[CData, State]):
-    results: List[Result] = []
-    for i in range(lib.imm_results_size(ptr)):
-        results.append(imm_result(lib.imm_results_get(ptr, i), sequence, states))
-    return Results(ptr, results, sequence)
+    return Result(imm_result, path, sequence.subseq(Interval(0, len(sequence))))
 
 
 def imm_state(ptr: CData, alphabet: Alphabet) -> State:

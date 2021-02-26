@@ -30,6 +30,16 @@ enum imm_symbol_type
     IMM_SYMBOL_ANY = 2,
 };
 
+/**
+ * Sequence of characters. No need for null-terminated string.
+ */
+struct imm_seq
+{
+    struct imm_abc const* abc;
+    char const*           string;
+    uint32_t              length;
+};
+
 /* Alphabet */
 char                  imm_abc_any_symbol(struct imm_abc const* abc);
 struct imm_abc const* imm_abc_clone(struct imm_abc const* abc);
@@ -52,10 +62,10 @@ struct imm_abc const*       imm_abc_lprob_abc(struct imm_abc_lprob const* abc_lp
 imm_float                   imm_abc_lprob_get(struct imm_abc_lprob const* abc_lprob, char symbol);
 
 /* DP */
-void                      imm_dp_destroy(struct imm_dp const* dp);
-struct imm_results const* imm_dp_viterbi(struct imm_dp const* dp, struct imm_dp_task* task);
-int                       imm_dp_change_trans(struct imm_dp* dp, struct imm_hmm* hmm, struct imm_state const* src_state,
-                                              struct imm_state const* tgt_state, imm_float lprob);
+void                     imm_dp_destroy(struct imm_dp const* dp);
+struct imm_result const* imm_dp_viterbi(struct imm_dp const* dp, struct imm_dp_task* task);
+int                      imm_dp_change_trans(struct imm_dp* dp, struct imm_hmm* hmm, struct imm_state const* src_state,
+                                             struct imm_state const* tgt_state, imm_float lprob);
 /* DP task */
 struct imm_dp_task* imm_dp_task_create(struct imm_dp const* dp);
 void                imm_dp_task_setup(struct imm_dp_task* task, struct imm_seq const* seq);
@@ -80,17 +90,18 @@ int       imm_hmm_set_trans(struct imm_hmm* hmm, struct imm_state const* src_sta
 
 /* Model */
 struct imm_model*       imm_model_create(struct imm_hmm* hmm, struct imm_dp const* dp);
+void                    imm_model_destroy(struct imm_model const* model, bool deep);
 struct imm_dp const*    imm_model_dp(struct imm_model const* model);
 struct imm_hmm*         imm_model_hmm(struct imm_model const* model);
 uint16_t                imm_model_nstates(struct imm_model const* model);
 struct imm_state const* imm_model_state(struct imm_model const* model, uint16_t i);
 
 /* Input */
-int                     imm_input_close(struct imm_input* input);
-struct imm_input*       imm_input_create(char const* filepath);
-int                     imm_input_destroy(struct imm_input* input);
-bool                    imm_input_eof(struct imm_input const* input);
-struct imm_model const* imm_input_read(struct imm_input* input);
+int                       imm_input_close(struct imm_input* input);
+struct imm_input*         imm_input_create(char const* filepath);
+int                       imm_input_destroy(struct imm_input* input);
+bool                      imm_input_eof(struct imm_input const* input);
+struct imm_profile const* imm_input_read(struct imm_input* input);
 
 /* Profile */
 struct imm_abc const*     imm_profile_abc(struct imm_profile const* prof);
@@ -109,7 +120,7 @@ struct imm_mute_state const* imm_mute_state_derived(struct imm_state const* stat
 void                         imm_mute_state_destroy(struct imm_mute_state const* state);
 struct imm_state const*      imm_mute_state_read(FILE* stream, struct imm_abc const* abc);
 struct imm_state const*      imm_mute_state_super(struct imm_mute_state const* state);
-int imm_mute_state_write(struct imm_state const* state, struct imm_model const* model, FILE* stream);
+int imm_mute_state_write(struct imm_state const* state, struct imm_profile const* prof, FILE* stream);
 
 /* Normal state */
 struct imm_normal_state const* imm_normal_state_create(char const* name, struct imm_abc const* abc,
@@ -118,13 +129,13 @@ struct imm_normal_state const* imm_normal_state_derived(struct imm_state const* 
 void                           imm_normal_state_destroy(struct imm_normal_state const* state);
 struct imm_state const*        imm_normal_state_read(FILE* stream, struct imm_abc const* abc);
 struct imm_state const*        imm_normal_state_super(struct imm_normal_state const* state);
-int imm_normal_state_write(struct imm_state const* state, struct imm_model const* model, FILE* stream);
+int imm_normal_state_write(struct imm_state const* state, struct imm_profile const* prof, FILE* stream);
 
 /* Output */
 int                imm_output_close(struct imm_output* output);
 struct imm_output* imm_output_create(char const* filepath);
 int                imm_output_destroy(struct imm_output* output);
-int                imm_output_write(struct imm_output* output, struct imm_model const* model);
+int                imm_output_write(struct imm_output* output, struct imm_profile const* prof);
 
 /* Path */
 void                   imm_path_append(struct imm_path* path, struct imm_step* step);
@@ -180,13 +191,16 @@ void                    imm_step_destroy(struct imm_step const* step);
 uint8_t                 imm_step_seq_len(struct imm_step const* step);
 struct imm_state const* imm_step_state(struct imm_step const* step);
 
+/* Subseq */
+static inline void imm_subseq_set(struct imm_seq* subseq, struct imm_seq const* seq, uint32_t start, uint32_t length);
+
 /* Table state */
 struct imm_table_state const* imm_table_state_create(char const* name, struct imm_seq_table const* table);
 struct imm_table_state const* imm_table_state_derived(struct imm_state const* state);
 void                          imm_table_state_destroy(struct imm_table_state const* state);
 struct imm_state const*       imm_table_state_read(FILE* stream, struct imm_abc const* abc);
 struct imm_state const*       imm_table_state_super(struct imm_table_state const* state);
-int imm_table_state_write(struct imm_state const* state, struct imm_model const* model, FILE* stream);
+int imm_table_state_write(struct imm_state const* state, struct imm_profile const* prof, FILE* stream);
 
 /* Probabilities */
 imm_float imm_lprob_add(imm_float a, imm_float b);

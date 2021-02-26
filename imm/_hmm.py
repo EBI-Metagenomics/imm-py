@@ -7,7 +7,7 @@ from ._cdata import CData
 from ._ffi import ffi, lib
 from ._lprob import lprob_is_valid, lprob_is_zero, lprob_zero
 from ._path import Path
-from ._sequence import SequenceABC
+from ._sequence import Sequence
 from ._state import State
 
 __all__ = ["HMM"]
@@ -169,7 +169,7 @@ class HMM:
         if err != 0:
             raise ValueError("Normalization error.")
 
-    def loglikelihood(self, seq: SequenceABC, path: Path) -> float:
+    def loglikelihood(self, seq: Sequence, path: Path) -> float:
         lprob: float = lib.imm_hmm_loglikelihood(
             self._imm_hmm, seq.imm_seq, path.imm_path
         )

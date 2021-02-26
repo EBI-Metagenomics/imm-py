@@ -6,7 +6,6 @@ from ._dp import DP
 from ._dp_task import DPTask
 from ._fragment import Fragment, FragStep
 from ._hmm import HMM
-from ._hmm_block import HMMBlock
 from ._input import Input
 from ._interval import Interval
 from ._lprob import (
@@ -20,9 +19,9 @@ from ._lprob import (
 from ._model import Model
 from ._output import Output
 from ._path import Path
+from ._profile import Profile
 from ._result import Result
-from ._results import Results
-from ._sequence import Sequence, SequenceABC, SubSequence
+from ._sequence import Sequence
 from ._sequence_table import SequenceTable
 from ._state import MuteState, NormalState, State, StateType, TableState
 from ._step import Step
@@ -50,7 +49,6 @@ __all__ = [
     "FragStep",
     "Fragment",
     "HMM",
-    "HMMBlock",
     "Input",
     "Interval",
     "Model",
@@ -58,15 +56,13 @@ __all__ = [
     "NormalState",
     "Output",
     "Path",
+    "Profile",
     "Result",
-    "Results",
     "Sequence",
-    "SequenceABC",
     "SequenceTable",
     "State",
     "StateType",
     "Step",
-    "SubSequence",
     "TableState",
     "build_ext",
     "lib",

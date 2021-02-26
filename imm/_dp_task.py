@@ -41,9 +41,9 @@ class DPTask:
         """
         return cls(lib.imm_dp_task_create(dp.imm_dp))
 
-    def setup(self, seq: Sequence, window_length: int = 0):
+    def setup(self, seq: Sequence):
         self._sequence = seq
-        return lib.imm_dp_task_setup(self._imm_dp_task, seq.imm_seq, window_length)
+        return lib.imm_dp_task_setup(self._imm_dp_task, seq.imm_seq)
 
     @property
     def sequence(self) -> Sequence:
