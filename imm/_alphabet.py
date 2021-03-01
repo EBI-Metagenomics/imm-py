@@ -24,9 +24,9 @@ class Alphabet:
     """
 
     def __init__(self, imm_abc: CData):
-        if imm_abc == ffi.NULL:
-            raise RuntimeError("`imm_abc` is NULL.")
         self._imm_abc = imm_abc
+        if self._imm_abc == ffi.NULL:
+            raise RuntimeError("`imm_abc` is NULL.")
 
     @classmethod
     def create(cls: Type[Alphabet], symbols: bytes, any_symbol: bytes) -> Alphabet:

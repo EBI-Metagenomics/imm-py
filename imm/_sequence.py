@@ -26,10 +26,9 @@ class Sequence:
         self, imm_seq: CData, alphabet: Alphabet, parent: Optional[Sequence] = None
     ):
         self._parent = parent
-        self._imm_seq = ffi.NULL
-        if imm_seq == ffi.NULL:
-            raise RuntimeError("`imm_seq` is NULL.")
         self._imm_seq = imm_seq
+        if self._imm_seq == ffi.NULL:
+            raise RuntimeError("`imm_seq` is NULL.")
         self._alphabet = alphabet
 
     @classmethod

@@ -26,10 +26,9 @@ class Result:
         path: Path,
         sequence: Sequence,
     ):
-        self._imm_result = ffi.NULL
-        if imm_result == ffi.NULL:
-            raise RuntimeError("`imm_result` is NULL.")
         self._imm_result = imm_result
+        if self._imm_result == ffi.NULL:
+            raise RuntimeError("`imm_result` is NULL.")
         self._path = path
         self._sequence = sequence
 

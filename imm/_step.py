@@ -26,9 +26,9 @@ class Step:
     """
 
     def __init__(self, imm_step: CData, state: State):
-        if imm_step == ffi.NULL:
-            raise RuntimeError("`imm_step` is NULL.")
         self._imm_step = imm_step
+        if self._imm_step == ffi.NULL:
+            raise RuntimeError("`imm_step` is NULL.")
         self._state = state
 
     @classmethod

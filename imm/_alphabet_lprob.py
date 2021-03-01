@@ -22,9 +22,9 @@ class AlphabetLprob:
     """
 
     def __init__(self, imm_abc_lprob: CData, alphabet: Alphabet):
-        if imm_abc_lprob == ffi.NULL:
-            raise RuntimeError("`imm_abc_lprob` is NULL.")
         self._imm_abc_lprob = imm_abc_lprob
+        if self._imm_abc_lprob == ffi.NULL:
+            raise RuntimeError("`imm_abc_lprob` is NULL.")
         self._alphabet = alphabet
 
     @classmethod

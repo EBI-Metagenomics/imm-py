@@ -22,9 +22,9 @@ class Path:
     """
 
     def __init__(self, imm_path: CData, steps: Iterable[Step]):
-        if imm_path == ffi.NULL:
-            raise RuntimeError("`imm_path` is NULL.")
         self._imm_path = imm_path
+        if self._imm_path == ffi.NULL:
+            raise RuntimeError("`imm_path` is NULL.")
         self._steps = list(steps)
 
     @classmethod

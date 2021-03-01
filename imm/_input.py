@@ -24,9 +24,9 @@ class Input:
     """
 
     def __init__(self, imm_input: CData):
-        if imm_input == ffi.NULL:
-            raise RuntimeError("`imm_input` is NULL.")
         self._imm_input = imm_input
+        if self._imm_input == ffi.NULL:
+            raise RuntimeError("`imm_input` is NULL.")
 
     @classmethod
     def create(cls: Type[Input], filepath: bytes) -> Input:

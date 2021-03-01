@@ -33,14 +33,14 @@ class HMM:
         alphabet: Alphabet,
         states: Optional[Dict[CData, State]] = None,
     ):
-        if imm_hmm == ffi.NULL:
+        self._imm_hmm = imm_hmm
+        if self._imm_hmm == ffi.NULL:
             raise RuntimeError("`imm_hmm` is NULL.")
         self._alphabet = alphabet
         if states is None:
             self._states: Dict[CData, State] = {}
         else:
             self._states = states
-        self._imm_hmm = imm_hmm
 
     @classmethod
     def create(cls: Type[HMM], alphabet: Alphabet) -> HMM:

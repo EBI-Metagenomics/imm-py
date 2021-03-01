@@ -12,10 +12,9 @@ __all__ = ["Model"]
 
 class Model:
     def __init__(self, imm_model: CData, hmm: HMM, dp: DP):
-        self._imm_model = ffi.NULL
-        if imm_model == ffi.NULL:
-            raise RuntimeError("`imm_model` is NULL.")
         self._imm_model = imm_model
+        if self._imm_model == ffi.NULL:
+            raise RuntimeError("`imm_model` is NULL.")
         self._hmm = hmm
         self._dp = dp
 

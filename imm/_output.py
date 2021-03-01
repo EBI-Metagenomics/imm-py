@@ -20,9 +20,9 @@ class Output:
     """
 
     def __init__(self, imm_output: CData):
-        if imm_output == ffi.NULL:
-            raise RuntimeError("`imm_output` is NULL.")
         self._imm_output = imm_output
+        if self._imm_output == ffi.NULL:
+            raise RuntimeError("`imm_output` is NULL.")
 
     @classmethod
     def create(cls: Type[Output], filepath: bytes) -> Output:

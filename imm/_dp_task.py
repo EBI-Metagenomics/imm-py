@@ -25,9 +25,9 @@ class DPTask:
 
     def __init__(self, imm_dp_task: CData):
         self._sequence: Optional[Sequence] = None
-        if imm_dp_task == ffi.NULL:
-            raise RuntimeError("`imm_dp_task` is NULL.")
         self._imm_dp_task = imm_dp_task
+        if self._imm_dp_task == ffi.NULL:
+            raise RuntimeError("`imm_dp_task` is NULL.")
 
     @classmethod
     def create(cls: Type[DPTask], dp: DP) -> DPTask:

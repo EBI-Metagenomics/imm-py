@@ -31,9 +31,9 @@ class State:
         alphabet
             Alphabet.
         """
-        if imm_state == ffi.NULL:
-            raise RuntimeError("`imm_state` is NULL.")
         self._imm_state = imm_state
+        if self._imm_state == ffi.NULL:
+            raise RuntimeError("`imm_state` is NULL.")
         self._alphabet = alphabet
 
     @property
@@ -92,9 +92,9 @@ class MuteState(State):
         alphabet
             Alphabet.
         """
-        if imm_mute_state == ffi.NULL:
-            raise RuntimeError("`imm_mute_state` is NULL.")
         self._imm_mute_state = imm_mute_state
+        if self._imm_mute_state == ffi.NULL:
+            raise RuntimeError("`imm_mute_state` is NULL.")
         super().__init__(lib.imm_mute_state_super(self._imm_mute_state), alphabet)
 
     @classmethod
@@ -132,9 +132,9 @@ class NormalState(State):
         alphabet
             Alphabet.
         """
-        if imm_normal_state == ffi.NULL:
-            raise RuntimeError("`imm_normal_state` is NULL.")
         self._imm_normal_state = imm_normal_state
+        if self._imm_normal_state == ffi.NULL:
+            raise RuntimeError("`imm_normal_state` is NULL.")
         super().__init__(lib.imm_normal_state_super(self._imm_normal_state), alphabet)
 
     @classmethod
@@ -176,9 +176,9 @@ class TableState(State):
         alphabet
             Alphabet.
         """
-        if imm_table_state == ffi.NULL:
-            raise RuntimeError("`imm_table_state` is NULL.")
         self._imm_table_state = imm_table_state
+        if self._imm_table_state == ffi.NULL:
+            raise RuntimeError("`imm_table_state` is NULL.")
         super().__init__(lib.imm_table_state_super(imm_table_state), alphabet)
 
     @classmethod

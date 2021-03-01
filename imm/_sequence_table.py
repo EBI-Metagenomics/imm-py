@@ -26,9 +26,9 @@ class SequenceTable(Generic[T]):
     """
 
     def __init__(self, imm_seq_table: CData, alphabet: T):
-        if imm_seq_table == ffi.NULL:
-            raise RuntimeError("`imm_seq_table` is NULL.")
         self._imm_seq_table = imm_seq_table
+        if self._imm_seq_table == ffi.NULL:
+            raise RuntimeError("`imm_seq_table` is NULL.")
         self._alphabet = alphabet
 
     @classmethod

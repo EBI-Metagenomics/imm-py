@@ -10,10 +10,9 @@ __all__ = ["DP"]
 
 class DP:
     def __init__(self, imm_dp: CData, hmm: HMM):
-        self._imm_dp = ffi.NULL
-        if imm_dp == ffi.NULL:
-            raise RuntimeError("`imm_dp` is NULL.")
         self._imm_dp = imm_dp
+        if self._imm_dp == ffi.NULL:
+            raise RuntimeError("`imm_dp` is NULL.")
         self._hmm = hmm
 
     @property

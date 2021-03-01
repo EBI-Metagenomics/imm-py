@@ -12,11 +12,10 @@ __all__ = ["Profile"]
 
 class Profile:
     def __init__(self, imm_profile: CData, alphabet: Alphabet):
-        self._imm_profile = ffi.NULL
-        if imm_profile == ffi.NULL:
+        self._imm_profile = imm_profile
+        if self._imm_profile == ffi.NULL:
             raise RuntimeError("`imm_profile` is NULL.")
         self._models: List[Model] = []
-        self._imm_profile = imm_profile
         self._alphabet = alphabet
 
     @property
